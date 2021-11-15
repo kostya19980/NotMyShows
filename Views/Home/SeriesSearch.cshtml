@@ -1,0 +1,195 @@
+﻿@model NotMyShows.ViewModel.SeriesViewModel
+@{
+    ViewData["Title"] = "Series Search";
+}
+<link rel="stylesheet" href="~/css/SeriesSearch.css" />
+@*<button id="Genres">
+        Жанры
+    </button>
+    <button id="Series">
+        Сериалы
+    </button>
+    <input type="number" id="StartId" />
+    <input type="number" id="EndId" />
+    <button id="SeriesById">
+        Подробности о сериале
+    </button>*@
+<div class="page-title">
+    <h1>
+        Каталог сериалов
+    </h1>
+</div>
+<div class="filter-series-container">
+    <div class="big-search-input-container">
+        <input class="search-input" placeholder="Поиск по сериалам" />
+        <button class="search-button">
+            <svg>
+                <use xlink:href="/Icons/outline/20/search.svg#search_icon"></use>
+            </svg>
+            Искать
+        </button>
+    </div>
+    <div class="series-filters">
+        <label>Фильтры</label>
+        <div class="filter-selects">
+            <div class="selects-row">
+                <select class="filter-select">
+                    <option value="" disabled selected>Жанр</option>
+                </select>
+                <select class="filter-select">
+                    <option value="" disabled selected>Страна</option>
+                </select>
+                <select class="filter-select">
+                    <option value="" disabled selected>Студия</option>
+                </select>
+            </div>
+            <div class="selects-row">
+                <select class="filter-select">
+                    <option value="" disabled selected>Год выхода</option>
+                </select>
+                <select class="filter-select">
+                    <option value="" disabled selected>Статус</option>
+                </select>
+                <select class="filter-select">
+                    <option value="" disabled selected>Рейтинг IMDB</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="series-search-result">
+    @foreach (var item in Model.SeriesListView)
+    {
+        <a id="@item.Series.Id" class="series-search-card" asp-controller="UserProfile" asp-action="Series" asp-route-SeriesId="@item.Series.Id">
+            <div class="series-cover-container">
+                <img src="\@Html.Raw(item.Series.PicturePath)" class="series-cover" />
+                <div class="series-status" style="background-color:@item.StatusColor">
+                    @item.Series.Status.Name
+                </div>
+            </div>
+            <div class="series-titles-container">
+                <label class="series-russian-title">@item.Series.OriginalTitle</label>
+                <label class="series-origin-title">@item.Series.Title</label>
+            </div>
+        </a>
+    }
+</div>
+@*@foreach (var item in Model)
+    {
+        <div id="@item.Id">
+            <h3>@item.Title</h3>
+            <h6 style="color:gray">@item.OriginalTitle</h6>
+            <div class="series_info">
+                <div class="info_block">
+                    <div>
+                        <img src="\@Html.Raw(item.PicturePath)" />
+                    </div>
+                    <div style="width:500px">
+                        @Html.Raw(item.Description)
+                    </div>
+                </div>
+                <div class="info_block">
+                    <div class="info_row_block">
+                        <label>
+                            Дата выхода:
+                        </label>
+                        @if (item.EndDate != null)
+                        {
+                            <p>
+                                &nbsp;@item.StartDate.ToLongDateString() - @item.EndDate.Value.ToLongDateString()
+                            </p>
+                        }
+                        else
+                        {
+                            <p>
+                                &nbsp;@item.StartDate.ToLongDateString() - ...
+                            </p>
+                        }
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            Статус:
+                        </label>
+                        <p>
+                            &nbsp;@item.Status.Name
+                        </p>
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            Жанры:
+                        </label>
+                        @foreach (var genre in item.SeriesGenres)
+                        {
+                            <p>
+                                &nbsp;@genre.Genre.Name
+                            </p>
+                        }
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            Канал:
+                        </label>
+                        <p>
+                            &nbsp;@item.Channel.Name
+                        </p>
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            Страна:
+                        </label>
+                        <p>
+                            &nbsp;@item.Country.RussianName (@item.Country.Name)
+                        </p>
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            Количество сезонов:
+                        </label>
+                        <p>&nbsp;@item.SeasonCount</p>
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            Общая длительность:
+                        </label>
+                        <p>
+                            &nbsp;@item.TotalTime
+                        </p>
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            Длительность эпизода:
+                        </label>
+                        <p>
+                            &nbsp;@item.EpisodeTime мин.
+                        </p>
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            Наш рейтинг:
+                        </label>
+                        <p>&nbsp;</p>
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            IMDB:
+                        </label>
+                        <a href="@Html.Raw("https://www.imdb.com/title/tt"+item.Raiting.ImdbId)" style="cursor:pointer">&nbsp;@item.Raiting.IMDB</a>
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            Кинопоиск:
+                        </label>
+                        <a href="@Html.Raw("https://www.kinopoisk.ru/series/"+item.Raiting.KinopoiskId)" style="cursor:pointer">&nbsp;@item.Raiting.Kinopoisk</a>
+                    </div>
+                    <div class="info_row_block">
+                        <label>
+                            Количество смотрящих:
+                        </label>
+                        <p>
+                            &nbsp;@item.Viewers
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }*@

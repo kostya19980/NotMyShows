@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NotMyShows</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        @*<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">NeMyshowsNew</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>*@
+        <nav>
+            <div class="nav-container">
+                <a class="navbar-logo" asp-controller="Home" asp-action="Index">
+                    <svg>
+                        <use xlink:href="/Icons/logo-item.svg#logo_icon"></use>
+                    </svg>
+                </a>
+                <div class="search-input-container">
+                    <input class="search-input" placeholder="Поиск по сериалам" />
+                    <button class="search-button">
+                        <svg>
+                            <use xlink:href="/Icons/outline/20/search.svg#search_icon"></use>
+                        </svg>
+                    </button>
+                </div>
+                <div class="nav-profile-container">
+                    <div class="nav-profile-buttons-container">
+                        <button class="nav-profile-button">
+                            <svg>
+                                <use xlink:href="/Icons/outline/20/message.svg#message_icon"></use>
+                            </svg>
+                        </button>
+                        <button class="nav-profile-button">
+                            <svg id="notification-svg">
+                                <use xlink:href="/Icons/outline/20/notification.svg#notification_icon"></use>
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="premium-button">
+                        Купить Premium
+                    </button>
+                    <div class="nav-profile-avatar-container">
+
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="body-content">
+        <aside class="sidebar-container">
+            <nav class="sidebar-nav">
+                <ul class="sidebar-menu-items">
+                    <li class="menu-item">
+                        <a asp-controller="UserProfile" asp-action="UserProfile">
+                            <svg>
+                                <use xlink:href="/Icons/outline/24/user.svg#user_icon"></use>
+                            </svg>
+                            Мой профиль
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#">
+                            <svg>
+                                <use xlink:href="/Icons/outline/24/calendar.svg#calendar_icon"></use>
+                            </svg>
+                            Лента событий
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a asp-controller="Home" asp-action="SeriesSearch">
+                            <svg>
+                                <use xlink:href="/Icons/outline/24/shows.svg#shows_icon"></use>
+                            </svg>
+                            Каталог сериалов
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#">
+                            <svg>
+                                <use xlink:href="/Icons/outline/24/recommendations.svg#recommendations_icon"></use>
+                            </svg>
+                            Рекомендации
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#">
+                            <svg>
+                                <use xlink:href="/Icons/outline/24/friends.svg#friends_icon"></use>
+                            </svg>
+                            Друзья
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#">
+                            <svg>
+                                <use xlink:href="/Icons/outline/24/favorites.svg#favorites_icon"></use>
+                            </svg>
+                            Избранное
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#">
+                            <svg>
+                                <use xlink:href="/Icons/outline/24/achievements.svg#achievements_icon"></use>
+                            </svg>
+                            Мои достижения
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="#">
+                            <svg>
+                                <use xlink:href="/Icons/outline/24/news.svg#news_icon"></use>
+                            </svg>
+                            Новости
+                        </a>
+                    </li>
+                </ul>
+                <ul class="secondary-links">
+                    <li class="link-item">
+                        <a href="#">
+                            Реклама
+                        </a>
+                        <a href="#">
+                            Контакты
+                        </a>
+                    </li>
+                    <li class="link-item">
+                        <a href="#">
+                            Частые вопросы
+                        </a>
+                        <a href="#">
+                            Ещё
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <main role="main" class="main-render-body">
+            @RenderBody()
+        </main>
+    </div>
+
+    @*<footer>
+        <div class="container">
+            &copy; 2020 - NeMyshowsNew - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>*@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,36 @@
+﻿@model NotMyShows.ViewModel.SeriesViewModel
+@{
+    ViewData["Title"] = "_ProfileSeries";
+}
+@if (Model.SeriesListView != null)
+{
+    foreach (var series in Model.SeriesListView)
+    {
+        <div class="series-search-card profile-series-card">
+            <div class="series-cover-container">
+                <img src="\@Html.Raw(series.Series.PicturePath)" class="series-cover" />
+                <div class="series-status" style="background-color:@series.StatusColor">
+                    @series.Series.Status.Name
+                </div>
+            </div>
+            <div class="series-titles-container">
+                <label class="series-russian-title">@series.Series.OriginalTitle</label>
+                <label class="series-origin-title">@series.Series.Title</label>
+            </div>
+            <div class="series-raiting-progress-container">
+                <div class="series-raiting">
+                    <svg>
+                        <use xlink:href="/Icons/outline/24/star.svg#star_icon"></use>
+                    </svg>
+                    <div class="series-raiting-number">
+                        9
+                    </div>
+                </div>
+                <div class="series-progress">
+                    <progress id="file" max="100" value="70"></progress>
+                    <div class="progress-count">40/50</div>
+                </div>
+            </div>
+        </div>
+    }
+}

@@ -1,0 +1,379 @@
+﻿@font-face {
+    font-family: "Inter";
+    src: url('../Shrifts/Inter/static/Inter-Bold.ttf');
+    font-style: normal;
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url('../Shrifts/Inter/static/Inter-SemiBold.ttf');
+    font-style: normal;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url('../Shrifts/Inter/static/Inter-Medium.ttf');
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url('../Shrifts/Inter/static/Inter-Regular.ttf');
+    font-style: normal;
+    font-weight: normal;
+}
+
+:root {
+    /*Accent*/
+    --color-accent-purple: #AB47F2;
+    --color-accent-purple-gradient: radial-gradient(100% 102.61% at 0% 75%, #700BB9 0%, #AB47F2 100%);
+    /*Status*/
+    --color-status-error: #FF3C2B;
+    --color-status-success: #35BF43;
+    --color-status-warning: #E8BE00;
+    /*Others*/
+    --color-true-black: #000000;
+    --color-true-white: #FFFFFF;
+    /*Grey*/
+    --color-grey-0: #161617;
+    --color-grey-25: #222223;
+    --color-grey-50: #2D2D2F;
+    --color-grey-100: #444447;
+    --color-grey-200: #717175;
+    --color-grey-300: #98989D;
+    --color-grey-400: #B7B7BD;
+    --color-grey-500: #CFCFD5;
+    --color-grey-600: #E2E2E7;
+    --color-grey-700: #EFEFF3;
+    --color-grey-800: #F9F9FB;
+    --color-grey-900: #FFFFFF;
+    /*Background*/
+    --color-bg: var(--color-grey-0);
+    --color-bg-surface: var(--color-grey-25);
+    --color-bg-contrast: var(--color-grey-900);
+    /*Text*/
+    --color-text-heading: var(--color-grey-900);
+    --color-text: var(--color-grey-500);
+    --color-text-secondary: var(--color-grey-300);
+    --color-text-contrast: var(--color-grey-50);
+    /*Icon*/
+    --color-icon: var(--color-grey-900);
+    --color-icon-secondary: var(--color-grey-300);
+    /*Separator & Stroke*/
+    --color-separator-surface: var(--color-grey-50);
+    /*Input*/
+    --color-bg-input: var(--color-grey-50);
+    --color-border-input-hover: var(--color-grey-100);
+    --color-border-input-focus: var(--color-accent-purple);
+    /*ErrorAlert*/
+    --color-bg-error-alert: var(--color-grey-100);
+    --color-border-error-alert: var(--color-status-error);
+    /*Font*/
+    --font-family-base: Inter;
+    --font-24-Medium: normal var(--font-weight-medium) 24px/32px var(--font-family-base);
+    --font-18-Medium: normal var(--font-weight-medium) 18px/24px var(--font-family-base);
+    --font-16-Medium: normal var(--font-weight-medium) 16px/24px var(--font-family-base);
+    --font-14-Medium: normal var(--font-weight-medium) 14px/20px var(--font-family-base);
+    --font-14-16-Medium: normal var(--font-weight-medium) 14px/16px var(--font-family-base);
+    --font-12-12-Medium: normal var(--font-weight-medium) 12px/12px var(--font-family-base);
+    --font-13-16-Medium: normal var(--font-weight-medium) 13px/16px var(--font-family-base);
+    /*************************************************************************/
+    --font-16-Semibold: normal var(--font-weight-semibold) 16px/24px var(--font-family-base);
+    --font-14-16-Semibold: normal var(--font-weight-semibold) 14px/16px var(--font-family-base);
+    --font-13-16-Semibold: normal var(--font-weight-semibold) 13px/16px var(--font-family-base);
+    /*************************************************************************/
+    --font-16-Regular: normal normal 16px/24px var(--font-family-base);
+    --font-14-Regular: normal normal 14px/20px var(--font-family-base);
+    --font-14-16-Regular: normal normal 14px/16px var(--font-family-base);
+    --font-12-16-Regular: normal normal 12px/16px var(--font-family-base);
+    /*************************************************************************/
+    --font-L-XXL-Heading-1-48-B: normal bold 48px/56px var(--font-family-base);
+    --font-S-M-Heading-1-40-B: normal bold 40px/48px var(--font-family-base);
+    --font-XXS-XS-Heading-1-36-B: normal bold 32px/40px var(--font-family-base);
+    /*FontWeight*/
+    --font-weight-semibold: 600;
+    --font-weight-medium: 500;
+}
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    outline: none;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg);
+}
+.body-content {
+    display: flex;
+    flex-direction: row;
+}
+
+.main-render-body {
+    position: static;
+    padding-left: 320px;
+    padding-right: 32px;
+    padding-top: 96px;
+    width: 100%;
+    height: 5000px;
+}
+li {
+    list-style-type: none; /* Убираем маркеры */
+}
+
+ul {
+    margin-left: 0; /* Отступ слева в браузере IE и Opera */
+    padding-left: 0; /* Отступ слева в браузере Firefox, Safari, Chrome */
+}
+svg {
+    fill: var(--color-icon);
+}
+header {
+    position: fixed;
+    width: 100%;
+    z-index: 1
+}
+.nav-container {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--color-bg-surface);
+    box-shadow: 0px 1px 0px #161617;
+    height: 64px;
+    padding: 12px 24px 12px 24px;
+}
+.navbar-logo {
+    display: flex;
+}
+.navbar-logo > svg {
+    width: 104px;
+    height: 40px;
+}
+.search-input-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 352px;
+    height: 40px;
+    margin-left: 192px;
+}
+.search-input {
+    border: none;
+    padding: 8px 12px;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px 0px 0px 4px;
+    background: var(--color-grey-100);
+    font: var(--font-16-Regular);
+}
+/* Современные браузеры
+   ----------------------------  */
+.search-input::placeholder {
+    color: var(--color-text-secondary);
+}
+/* WebKit, Edge
+   ----------------------------  */
+.search-input::-webkit-input-placeholder {
+    color: var(--color-text-secondary);
+}
+/* Edge
+   ----------------------------  */
+.search-input::-ms-input-placeholder {
+    color: var(--color-text-secondary);
+}
+/* Firefox 4-18
+   ----------------------------  */
+.search-input:-moz-placeholder {
+    color: var(--color-text-secondary);
+    opacity: 1;
+}
+/* Firefox 19+
+   ----------------------------  */
+.search-input::-moz-placeholder {
+    color: var(--color-text-secondary);
+    opacity: 1;
+}
+/* IE 10-11
+   ----------------------------  */
+.search-input:-ms-input-placeholder {
+    color: var(--color-text-secondary);
+}
+.search-input:focus {
+    outline: none;
+}
+.search-button {
+    display: flex;
+    background: var(--color-grey-100);
+    border: none;
+    margin-left: 1px;
+    border-radius: 0px 4px 4px 0px;
+    width: 40px;
+    height: 100%;
+    padding: 10px;
+}
+.search-button:active {
+    outline: none;
+}
+.search-button:focus {
+    outline: none;
+}
+.search-button > svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--color-icon);
+    fill: none;
+}
+
+/*Profile navbar*/
+.nav-profile-container {
+    display: flex;
+    margin-left: auto;
+    flex-direction: row;
+    align-items: center;
+    height: 40px;
+    width: 273px;
+}
+.nav-profile-buttons-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 32px;
+    width: 72px;
+}
+.nav-profile-button {
+    display: flex;
+    border: none;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border-radius: 4px;
+    padding: 6px;
+}
+.nav-profile-button > svg {
+    width: 20px;
+    height: 20px;
+}
+#notification-svg {
+    stroke: var(--color-icon);
+}
+.premium-button {
+    padding: 8px 12px;
+    width: 129px;
+    height: 32px;
+    font: var(--font-13-16-Semibold);
+    color: var(--color-text-heading);
+    border: none;
+    border-radius: 4px;
+    background: var(--color-accent-purple-gradient);
+    margin-left: 16px;
+}
+.premium-button:hover {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.16)), radial-gradient(100% 102.61% at 0% 75%, #700BB9 0%, #AB47F2 100%);
+}
+.premium-button:active {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.24)), radial-gradient(100% 102.61% at 0% 75%, #700BB9 0%, #AB47F2 100%);
+    outline: none;
+}
+.premium-button:focus {
+    outline: none;
+}
+.premium-button:focus-visible {
+    box-shadow: 0px 0px 0px 2px #FFFFFF;
+    outline: none;
+}
+.premium-button:disabled {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.24);
+    cursor: not-allowed;
+}
+
+.nav-profile-avatar-container {
+    width: 40px;
+    height: 40px;
+    margin-left: 16px;
+    border-radius: 50%;
+    background: white;
+}
+.sidebar-container {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: var(--color-bg-surface);
+    padding: 23px 0px 48px;
+    width: 288px;
+    height: 720px;
+    top: 65px;
+}
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+}
+.sidebar-menu-items {
+    position: static;
+    width: 100%;
+    margin: 0;
+}
+.menu-item {
+    display: flex;
+    height: 56px;
+}
+.menu-item > a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font: var(--font-16-Medium);
+    color: var(--color-text-heading);
+    padding: 16px 24px;
+    width: 100%;
+}
+.menu-item > a:hover {
+    text-decoration: none;
+}
+.menu-item > a > svg {
+    width: 24px;
+    height: 24px;
+    margin-right: 16px;
+    stroke: var(--color-icon);
+}
+.secondary-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    vertical-align: central;
+    position: static;
+    margin-bottom: 48px;
+    padding: 0px 24px;
+    height: 44px;
+}
+.link-item {
+    display: flex;
+    margin-left: -16px;
+}
+.link-item > a {
+    font: var(--font-14-16-Regular);
+    color: var(--color-text-secondary);
+    margin-left: 16px;
+}
+.page-title {
+    display: flex;
+    height: 56px;
+    padding: 16px 0px 0px;
+}
+h1 {
+    margin: 0;
+    font: var(--font-XXS-XS-Heading-1-36-B);
+    font-weight: 600;
+    color: var(--color-text-heading);
+}

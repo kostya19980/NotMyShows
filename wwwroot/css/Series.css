@@ -1,0 +1,393 @@
+﻿@font-face {
+    font-family: "Inter";
+    src: url('../Shrifts/Inter/static/Inter-Bold.ttf');
+    font-style: normal;
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url('../Shrifts/Inter/static/Inter-SemiBold.ttf');
+    font-style: normal;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url('../Shrifts/Inter/static/Inter-Medium.ttf');
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "Inter";
+    src: url('../Shrifts/Inter/static/Inter-Regular.ttf');
+    font-style: normal;
+    font-weight: normal;
+}
+
+:root {
+    /*Accent*/
+    --color-accent-purple: #AB47F2;
+    --color-accent-purple-gradient: radial-gradient(100% 102.61% at 0% 75%, #700BB9 0%, #AB47F2 100%);
+    /*Status*/
+    --color-status-error: #FF3C2B;
+    --color-status-success: #35BF43;
+    --color-status-warning: #E8BE00;
+    /*Others*/
+    --color-true-black: #000000;
+    --color-true-white: #FFFFFF;
+    /*Grey*/
+    --color-grey-0: #161617;
+    --color-grey-25: #222223;
+    --color-grey-50: #2D2D2F;
+    --color-grey-100: #444447;
+    --color-grey-200: #717175;
+    --color-grey-300: #98989D;
+    --color-grey-400: #B7B7BD;
+    --color-grey-500: #CFCFD5;
+    --color-grey-600: #E2E2E7;
+    --color-grey-700: #EFEFF3;
+    --color-grey-800: #F9F9FB;
+    --color-grey-900: #FFFFFF;
+    /*Background*/
+    --color-bg: var(--color-grey-0);
+    --color-bg-surface: var(--color-grey-25);
+    --color-bg-contrast: var(--color-grey-900);
+    /*Text*/
+    --color-text-heading: var(--color-grey-900);
+    --color-text: var(--color-grey-500);
+    --color-text-secondary: var(--color-grey-300);
+    --color-text-contrast: var(--color-grey-50);
+    /*Icon*/
+    --color-icon: var(--color-grey-900);
+    --color-icon-secondary: var(--color-grey-300);
+    /*Separator & Stroke*/
+    --color-separator-surface: var(--color-grey-50);
+    /*Input*/
+    --color-bg-input: var(--color-grey-50);
+    --color-border-input-hover: var(--color-grey-100);
+    --color-border-input-focus: var(--color-accent-purple);
+    /*ErrorAlert*/
+    --color-bg-error-alert: var(--color-grey-100);
+    --color-border-error-alert: var(--color-status-error);
+    /*Font*/
+    --font-family-base: Inter;
+    --font-24-Medium: normal var(--font-weight-medium) 24px/32px var(--font-family-base);
+    --font-18-Medium: normal var(--font-weight-medium) 18px/24px var(--font-family-base);
+    --font-16-Medium: normal var(--font-weight-medium) 16px/24px var(--font-family-base);
+    --font-14-Medium: normal var(--font-weight-medium) 14px/20px var(--font-family-base);
+    --font-14-16-Medium: normal var(--font-weight-medium) 14px/16px var(--font-family-base);
+    --font-12-12-Medium: normal var(--font-weight-medium) 12px/12px var(--font-family-base);
+    --font-13-16-Medium: normal var(--font-weight-medium) 13px/16px var(--font-family-base);
+    /*************************************************************************/
+    --font-16-Semibold: normal var(--font-weight-semibold) 16px/24px var(--font-family-base);
+    --font-14-16-Semibold: normal var(--font-weight-semibold) 14px/16px var(--font-family-base);
+    --font-13-16-Semibold: normal var(--font-weight-semibold) 13px/16px var(--font-family-base);
+    /*************************************************************************/
+    --font-16-Regular: normal normal 16px/24px var(--font-family-base);
+    --font-14-Regular: normal normal 14px/20px var(--font-family-base);
+    --font-14-16-Regular: normal normal 14px/16px var(--font-family-base);
+    --font-12-16-Regular: normal normal 12px/16px var(--font-family-base);
+    /*************************************************************************/
+    --font-L-XXL-Heading-1-48-B: normal bold 48px/56px var(--font-family-base);
+    --font-S-M-Heading-1-40-B: normal bold 40px/48px var(--font-family-base);
+    --font-XXS-XS-Heading-1-36-B: normal bold 32px/40px var(--font-family-base);
+    /*FontWeight*/
+    --font-weight-semibold: 600;
+    --font-weight-medium: 500;
+}
+.series-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.series-cover-container {
+    width: 424px;
+    height: 636px;
+}
+.series-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.series-info-container {
+    width: 432px;
+    margin-left: 24px;
+}
+.series-titles-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 66px;
+    margin-top: 8px;
+}
+.russian-title-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 40px;
+}
+.origin-title {
+    font: var(--font-16-Regular);
+    color: var(--color-text-secondary);
+}
+
+.russian-title {
+    font: var(--font-XXS-XS-Heading-1-36-B);
+    color: var(--color-text-heading);
+}
+.status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 63px;
+    height: 24px;
+    padding: 4px 8px;
+    margin-left: 16px;
+    border-radius: 12px;
+    font: var(--font-14-16-Regular);
+    color: var(--color-text-heading);
+}
+.series-raiting {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 18px;
+}
+.stars-container > svg {
+    stroke: var(--color-accent-purple);
+    width: 24px;
+    height: 24px;
+    margin-left: 8px;
+}
+.stars-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 24px;
+    margin-left: -8px;
+}
+.raiting-number {
+    margin-left: 8px;
+    font: var(--font-18-Medium);
+    font-weight: normal;
+    color: var(--color-text-secondary);
+}
+.viewing-status-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 40px;
+    margin-top: 24px;
+    margin-left: -12px;
+}
+.viewing-status-button {
+    padding: 8px 16px;
+    height: 40px;
+    background: #2E2E30;
+    border: none;
+    border-radius: 8px;
+    margin-left: 12px;
+    font: var(--font-16-Medium);
+    color: var(--color-text-secondary);
+}
+.viewing-status-button-selected {
+    color: var(--color-text-heading);
+    background: #5537EE;
+}
+.viewing-status-button:focus {
+    outline: none;
+}
+.series-info {
+    display: flex;
+    flex-direction: column;
+    margin-top: 38px;
+}
+.info-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 24px;
+    margin-top: 4px;
+}
+.info-label {
+    font: var(--font-16-Regular);
+    color: var(--color-text-secondary);
+}
+.info {
+    margin-left: 4px;
+    font: var(--font-16-Regular);
+    color: var(--color-text-heading);
+}
+.series-description {
+    display: flex;
+    flex-direction: column;
+    width: 880px;
+    margin-top: 61px;
+}
+.series-description > label {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    color: var(--color-text-heading);
+}
+.series-description > span {
+    font: var(--font-16-Regular);
+    color: var(--color-text-heading);
+    margin-top: 13px;
+}
+.episodes-container {
+    width: 880px;
+    margin-top: 55px;
+}
+.episodes-container-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.episodes-container-title {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 32px;
+    color: var(--color-text-heading);
+}
+.check-all-episodes-button {
+    height: 48px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font: var(--font-18-Medium);
+    color: var(--color-text-heading);
+    background: #5537EE;
+}
+.check-all-episodes-button:focus {
+    outline: none;
+}
+.season-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+}
+.season {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 56px;
+    border-radius: 8px;
+    background: var(--color-bg-surface);
+    box-shadow: 0px 0px 16px #141414;
+    margin-top: 16px;
+    padding: 16px 16px 16px 24px;
+}
+.season-number {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    color: var(--color-text-heading);
+}
+.episodes {
+    display: none;
+    align-self: center;
+    width: 864px;
+    margin-top: 4px;
+}
+.episode {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 32px;
+    border-radius: 2px;
+    margin-top: 4px;
+    padding: 4px 8px 4px 4px;
+}
+.episode:nth-child(even) {
+    background: #2E2E30;
+}
+.custom-checkbox {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
+.custom-checkbox+label {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+}
+.custom-checkbox+label::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #FFFFFF;
+  border-radius: 4px;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.custom-checkbox:checked+label::before {
+  border: none;
+  background-color: #5537EE;
+  background-image: url("../Icons/check.svg");
+}
+/* стили при наведении курсора на checkbox */
+/*.custom-checkbox:not(:disabled):not(:checked)+label:hover::before {
+  border-color: #b3d7ff;
+}*/
+/* стили для активного состояния чекбокса (при нажатии на него) */
+/*.custom-checkbox:not(:disabled):active+label::before {
+  background-color: #b3d7ff;
+  border-color: #b3d7ff;
+}*/
+/* стили для чекбокса, находящегося в фокусе */
+/*.custom-checkbox:focus+label::before {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}*/
+/* стили для чекбокса, находящегося в фокусе и не находящегося в состоянии checked */
+/*.custom-checkbox:focus:not(:checked)+label::before {
+  border-color: #80bdff;
+}*/
+/* стили для чекбокса, находящегося в состоянии disabled */
+/*.custom-checkbox:disabled+label::before {
+  background-color: #e9ecef;
+}*/
+.episode-info-item {
+    font: var(--font-16-Regular);
+    color: var(--color-text-heading);
+    margin-left: 24px;
+}
+.show-season-episodes-button {
+    display: flex;
+    border: none;
+    background: none;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    margin-left: auto;
+}
+.show-season-episodes-button:focus {
+    outline: none;
+}
+.show-season-episodes-button > svg {
+    width: 24px;
+    height: 24px;
+}
+.check-season-button {
+    display: none;
+    padding: 0;
+    font: var(--font-16-Regular);
+    color: #5537EE;
+    border: none;
+    background: none;
+    margin-left: 16px;
+}
+.check-season-button:focus {
+    outline: none;
+}

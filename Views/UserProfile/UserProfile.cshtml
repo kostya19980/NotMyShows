@@ -1,0 +1,87 @@
+﻿@model NotMyShows.ViewModel.UserProfileViewModel
+@{
+    ViewData["Title"] = "UserProfile";
+}
+<link rel="stylesheet" href="~/css/UserProfile.css" />
+<link rel="stylesheet" href="~/css/SeriesSearch.css" />
+<div class="profile-container">
+    <div class="user-info">
+        <div class="user-avatar">
+
+        </div>
+        <div class="user-name">
+            @User.GetName()
+        </div>
+        <div class="user-raiting">
+            +11777
+        </div>
+    </div>
+    <div class="separator">
+
+    </div>
+    <div class="user-stats">
+        <div class="stat-item">
+            <div class="stat-number">
+                2 338
+            </div>
+            <div class="stat-name">
+                Просмотрено эпизодов
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">
+                25
+            </div>
+            <div class="stat-name">
+                Просмотрено сериалов
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">
+                1 624
+            </div>
+            <div class="stat-name">
+                Потрачено часов
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">
+                68
+            </div>
+            <div class="stat-name">
+                Потрачено дней
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">
+                2
+            </div>
+            <div class="stat-name">
+                Получено достижений
+            </div>
+        </div>
+    </div>
+</div>
+<div class="user-series">
+    <ul class="series-tabs">
+        @foreach (var item in Model.ViewingStatuses)
+        {
+            <li class="tab-item">
+                <a id="@item.ViewingStatus.Id" href="#">
+                    <div class="tab-name">
+                        @item.ViewingStatus.StatusName
+                    </div>
+                    <div class="tab-quantity">
+                        @item.SeriesCount
+                    </div>
+                </a>
+            </li>
+        }
+    </ul>
+    <div class="profile-series-cards-container">
+        @{
+            var model = new NotMyShows.ViewModel.SeriesViewModel();
+            await Html.RenderPartialAsync("~/Views/UserProfile/_ProfileSeries.cshtml", model);
+        }
+    </div>
+</div>

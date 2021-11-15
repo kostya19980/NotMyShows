@@ -1,0 +1,203 @@
+﻿@model NotMyShows.ViewModel.SeriesView
+@{
+    ViewData["Title"] = "Series";
+}
+<link rel="stylesheet" href="~/css/Series.css" />
+<div class="series-container">
+    <div class="series-cover-container">
+        <img src="\@Html.Raw(Model.Series.PicturePath)" class="series-cover" />
+    </div>
+    <div class="series-info-container" id="@Model.Series.Id">
+        <div class="series-titles-container">
+            <div class="russian-title-container">
+                <label class="russian-title">@Model.Series.Title</label>
+                <div class="status" style="background-color:@Model.StatusColor">
+                    @Model.Series.Status.Name
+                </div>
+            </div>
+            <label class="origin-title">@Model.Series.OriginalTitle</label>
+        </div>
+        <div class="series-raiting">
+            <div class="stars-container">
+                @for (int i = 0; i < 10; i++)
+                {
+                    <svg>
+                        <use xlink:href="/Icons/outline/24/star.svg#star_icon"></use>
+                    </svg>
+                }
+            </div>
+            <div class="raiting-number">
+                0/10
+            </div>
+        </div>
+        <div class="viewing-status-container">
+            <button class="viewing-status-button" data="Смотрю">
+                Смотрю
+            </button>
+            <button class="viewing-status-button" data="Запланировано">
+                Запланировано
+            </button>
+            <button class="viewing-status-button" data="Отложено">
+                Отложено
+            </button>
+        </div>
+        <div class="series-info">
+            <div class="info-item">
+                <div class="info-label">Даты выхода:</div>
+                <div class="info">
+                    @if (Model.Series.EndDate != null)
+                    {
+                        <p>
+                            &nbsp;@Model.Series.StartDate.ToLongDateString() - @Model.Series.EndDate.Value.ToLongDateString()
+                        </p>
+                    }
+                    else
+                    {
+                        <p>
+                            &nbsp;@Model.Series.StartDate.ToLongDateString() –
+                        </p>
+                    }
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Страна:</div>
+                <div class="info">
+                    @Model.Series.Country.RussianName
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Производство:</div>
+                <div class="info">
+                    @Model.Series.Channel.Name
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Жанр:</div>
+                <div class="info">
+                    @{
+                        int k = 0;
+                        foreach (var genre in Model.Series.SeriesGenres)
+                        {
+                            if (k == Model.Series.SeriesGenres.Count() - 1)
+                            {
+                                <span>
+                                    @genre.Genre.Name
+                                </span>
+                            }
+                            else
+                            {
+                                <span>
+                                    @genre.Genre.Name,
+                                </span>
+                            }
+                            k++;
+                        }
+                    }
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Актёры:</div>
+                <div class="info">
+
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Сезонов:</div>
+                <div class="info">
+                    @Model.Series.SeasonCount
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Серий в сезоне:</div>
+                <div class="info">
+                    @Model.Series.Episodes.Where(x => x.SeasonNumber == 1 && x.EpisodeNumber != 0).Count()
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Длительность:</div>
+                <div class="info">
+                    @Model.Series.TotalTime
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Рейтинг IMDB:</div>
+                <div class="info">
+                    @Model.Series.Raiting.IMDB
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Рейтинг Кинопоиск:</div>
+                <div class="info">
+                    @Model.Series.Raiting.Kinopoisk
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Рейтинг 01shows:</div>
+                <div class="info">
+                    @Model.Series.Raiting.Raiting
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="series-description">
+    @*@Html.Raw(Model.Series.Description)*@
+    <label>
+        Описание сериала
+    </label>
+    <span>
+        История об испытаниях и невзгодах, которые приходится преодолеть Солу Гудману, адвокату по уголовным делам, в тот период, когда он пытается открыть свою собственную адвокатскую контору в Альбукерке, штат Нью-Мексико.
+    </span>
+</div>
+<div class="episodes-container">
+    <div class="episodes-container-header">
+        <div class="episodes-container-title">
+            Список серий
+        </div>
+        <button class="check-all-episodes-button">
+            Отметить все серии
+        </button>
+    </div>
+    @for (int j = 0; j < Model.Series.SeasonCount; j++)
+    {
+        <div id="season_@(j+1)" class="season-container">
+            <div class="season">
+                <div class="season-number">
+                    Сезон @(j+1)
+                </div>
+                <button class="check-season-button" data="season_@(j+1)">
+                    Отметить весь сезон
+                </button>
+                <button class="show-season-episodes-button" data="season_@(j+1)">
+                    <svg>
+                        <use xlink:href="/Icons/plus.svg#plus_icon"></use>
+                    </svg>
+                </button>
+            </div>
+            <div class="episodes">
+                @foreach (var episode in Model.Series.Episodes)
+                {
+                    if (episode.SeasonNumber == j + 1)
+                    {
+                        <div class="episode">
+                            <input type="checkbox" class="custom-checkbox" id="@episode.Id">
+                            <label for="@episode.Id"></label>
+                            <div class="episode-info-item" style="width: 88px;">
+                                @if(episode.Date != null)
+                                {
+                                    @episode.Date.Value.ToShortDateString()
+                                }
+                            </div>
+                            <div class="episode-info-item" style="width: 88px;">
+                                @String.Format("{0:00}", episode.EpisodeNumber)
+                            </div>
+                            <div class="episode-info-item">
+                                @episode.Title
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
