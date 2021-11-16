@@ -1,23 +1,62 @@
 ﻿@{
+    Layout = null;
     ViewData["Title"] = "Home Page";
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="auth-header">
+                <a class="navbar-logo" asp-controller="Home" asp-action="Index">
+                    <svg>
+                        <use xlink:href="/Icons/logo-item.svg#logo_icon"></use>
+                    </svg>
+                </a>
+                <div class="auth-header-buttons-container">
+                    <a asp-controller="Home" asp-action="Login" class="primary-button M">
+                        Войти
+                    </a>
+                    <a asp-controller="Home" asp-action="Register" class="primary-button M">
+                        Зарегистрироваться
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="body-content">
+        <main role="main" class="main-page-body">
+            <div class="main-page-first-text">
+                Смотри и отслеживай сериалы не отрываясь
+            </div>
+            <div class="main-page-second-text">
+                С 01shows твой просмотр сериалов становится удобнее и интереснее — планируй просмотр сериалов, отмечай просмотренные серии, следи за выходом новых и получай медали за достижения
+            </div>
+            <a asp-controller="Home" asp-action="GetUser">
+                User
+            </a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Home" asp-action="Logout">
+                    Выход
+                </a>
+            }
+        </main>
+    </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-<a asp-controller="Home" asp-action="Secret">
-    login
-</a>
-<a asp-controller="Home" asp-action="Register">
-    register
-</a>
-<a asp-controller="Home" asp-action="GetUser">
-    User
-</a>
-@if (User.Identity.IsAuthenticated)
-{
-    <a asp-controller="Home" asp-action="Logout">
-        Выход
-    </a>
-}
+    @*<footer>
+            <div class="container">
+                &copy; 2020 - NeMyshowsNew - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>*@
+</body>
+</html>

@@ -30,6 +30,10 @@ namespace NeMyshows.Controllers
         }
         public async Task <IActionResult> Index()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("UserProfile", "UserProfile");
+            }
             return View();
         }
         [Authorize]
@@ -43,19 +47,30 @@ namespace NeMyshows.Controllers
             var identity = (ClaimsIdentity)User.Identity;
             return Json(User.GetName());
         }
-        public IActionResult Login()
+        public IActionResult Login(string ReturnUrl)
         {
+            string redirectUri;
+            if (ReturnUrl != null)
+            {
+                redirectUri = ReturnUrl;
+            }
+            else
+            {
+                redirectUri = Request.Headers["Referer"].ToString();
+            }
             return Challenge(new AuthenticationProperties 
             { 
-                RedirectUri = Request.Headers["Referer"].ToString() 
+                RedirectUri = redirectUri
             }, OpenIdConnectDefaults.AuthenticationScheme);
         }
         public IActionResult Register()
         {
-            return Challenge(new AuthenticationProperties
-            {
-                RedirectUri = Request.Headers["Referer"].ToString()
-            }, OpenIdConnectDefaults.AuthenticationScheme);
+            string RedirectUri = Request.Headers["Referer"].ToString();
+            return Redirect("https://localhost:9001/Account/Register?ReturnUrl="+RedirectUri);
+            //return Challenge(new AuthenticationProperties
+            //{
+            //    RedirectUri = Request.Headers["Referer"].ToString()
+            //}, OpenIdConnectDefaults.AuthenticationScheme);
         }
         public ActionResult Logout()
         {

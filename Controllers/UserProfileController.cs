@@ -118,15 +118,6 @@ namespace NotMyShows.Controllers
             //}
             string UserSub = User.GetSub();
             UserProfile userProfile = await db.UserProfiles.FirstOrDefaultAsync(x => x.UserSub == UserSub);
-            //if (userProfile == null)
-            //{
-            //    userProfile = new UserProfile
-            //    {
-            //        UserSub = UserSub
-            //    };
-            //    await db.AddAsync(userProfile);
-            //    await db.SaveChangesAsync();
-            //}
             if (userProfile != null)
             {
                 ViewingStatus status = await db.ViewingStatuses.FirstOrDefaultAsync(x => x.StatusName == StatusName);
@@ -140,6 +131,18 @@ namespace NotMyShows.Controllers
                 await db.SaveChangesAsync();
             }
             return Json(userProfile);
+        }
+        [Authorize]
+        public async Task<IActionResult> CreateUserProfile()
+        {
+            string UserSub = User.GetSub();
+            UserProfile userProfile = new UserProfile
+            {
+                UserSub = UserSub
+            };
+            await db.AddAsync(userProfile);
+            await db.SaveChangesAsync();
+            return RedirectToAction("UserProfile");
         }
     }
 }
