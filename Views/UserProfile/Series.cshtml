@@ -11,7 +11,7 @@
         <div class="series-titles-container">
             <div class="russian-title-container">
                 <label class="russian-title">@Model.Series.Title</label>
-                <div class="status" style="background-color:@Model.StatusColor">
+                <div class="status" style="background-color:@Model.StatusColorName">
                     @Model.Series.Status.Name
                 </div>
             </div>
@@ -31,15 +31,26 @@
             </div>
         </div>
         <div class="viewing-status-container">
-            <button class="viewing-status-button" data="Смотрю">
-                Смотрю
-            </button>
-            <button class="viewing-status-button" data="Запланировано">
-                Запланировано
-            </button>
-            <button class="viewing-status-button" data="Отложено">
-                Отложено
-            </button>
+            @{
+                int id = 1;
+                foreach (var item in Model.ViewingStatuses)
+                {
+                    <div class="viewing-status-radio-button">
+                        <input asp-for="CurrentViewingStatus" id="ViewingStatus @id" type="radio" name="radio" value="@item">
+                        <label class="viewing-status-input" for="ViewingStatus @id">@item</label>
+                    </div>
+                    id++;
+                }
+            }
+            @*<button class="viewing-status-button" data="Смотрю">
+            Смотрю
+        </button>
+        <button class="viewing-status-button" data="Запланировано">
+            Запланировано
+        </button>
+        <button class="viewing-status-button" data="Отложено">
+            Отложено
+        </button>*@
         </div>
         <div class="series-info">
             <div class="info-item">

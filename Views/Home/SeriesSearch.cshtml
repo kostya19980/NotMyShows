@@ -63,7 +63,7 @@
         <a id="@item.Series.Id" class="series-search-card" asp-controller="UserProfile" asp-action="Series" asp-route-SeriesId="@item.Series.Id">
             <div class="series-cover-container">
                 <img src="\@Html.Raw(item.Series.PicturePath)" class="series-cover" />
-                <div class="series-status" style="background-color:@item.StatusColor">
+                <div class="series-status" style="background-color:@item.StatusColorName">
                     @item.Series.Status.Name
                 </div>
             </div>

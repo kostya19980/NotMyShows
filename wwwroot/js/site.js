@@ -178,37 +178,6 @@
             }
         })
     })
-    var seriesCards = document.querySelectorAll(".series-search-card");
-    seriesCards.forEach(card => {
-        //card.addEventListener("click", function () {
-        //    $.ajax({
-        //        type: "POST",
-        //        url: "/UserProfile/AddSeries",
-        //        data: { "SeriesId": card.id },
-        //        success: function (response) {
-        //            console.log(response);
-        //        }
-        //    });
-        //})
-    });
-    var seriesTabs = document.querySelectorAll(".tab-item > a");
-    seriesTabs.forEach(tab => {
-        tab.addEventListener("click", function () {
-            console.log(tab.id);
-            seriesTabs.forEach(t => {
-                t.classList.remove('tab-item-selected');
-            })
-            this.classList.add('tab-item-selected');
-            $.ajax({
-                type: "POST",
-                url: "/UserProfile/_ProfileSeries",
-                data: { "StatusID": tab.id },
-                success: function (response) {
-                    document.querySelector(".profile-series-cards-container").innerHTML = response;
-                }
-            });
-        })
-    });
     var checkSeasonButtons = document.querySelectorAll(".check-season-button");
     checkSeasonButtons.forEach(button => {
         button.addEventListener("click", function () {
@@ -221,29 +190,34 @@
             })
         })
     });
-    var currentTab = document.querySelector(".tab-name");
-    if (currentTab != null) {
-        currentTab.click();
-    }
     /*////////////////////////////////////////////////////////////////*/
-    var viewingStatusButtons = document.querySelectorAll(".viewing-status-button");
-    viewingStatusButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            viewingStatusButtons.forEach(b => {
-                b.classList.remove('viewing-status-button-selected');
-            })
-            this.classList.add('viewing-status-button-selected');
-            var SeriesId = document.querySelector(".series-info-container").id;
-            var StatusName = button.getAttribute("data");
-            $.ajax({
-                type: "POST",
-                url: "/UserProfile/AddSeries",
-                data: { "SeriesId": SeriesId, "StatusName": StatusName },
-                success: function (response) {
-                    console.log(response);
-                }
-            });
-        })
+    $(".viewing-status-input").click(function (e) {
+        e.preventDefault();
+        $check = $(this).prev();
+        var SeriesId = document.querySelector(".series-info-container").id;
+        var StatusName = $check.attr("value");
+        if ($check.prop('checked')) {
+            $check.prop("checked", false);
+        }
+        else {
+            $check.prop("checked", true);
+        }
+        $.ajax({
+            type: "POST",
+            url: "/UserProfile/SelectViewingStatus",
+            data: { "SeriesId": SeriesId, "StatusName": StatusName },
+            success: function (response) {
+                console.log(response);
+            }
+        });
+    });
+    $(".tab-item > input").change(function (e) {
+        var tabsBlock = $(".series-tabs");
+        var prevTab = tabsBlock.attr("data");
+        $("#" + prevTab).hide();
+        var currentTab = $(this).val();
+        tabsBlock.attr("data", currentTab);
+        $("#" + currentTab).show();
     });
     $('.show-season-episodes-button').click(function () {
         var seasonContainer = $("#" + $(this).attr("data"));
@@ -254,6 +228,7 @@
             checkSeasonButton.toggle();
         }
     });
+    $(".tab-item > label")[0].click();
     var checkAllEpisodes = document.querySelector(".check-all-episodes-button");
     checkAllEpisodes.addEventListener("click", function () {
         var episodes = document.querySelectorAll(".custom-checkbox");

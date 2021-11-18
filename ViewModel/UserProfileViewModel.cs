@@ -8,12 +8,12 @@ namespace NotMyShows.ViewModel
     public class UserProfileViewModel
     {
         public UserProfile UserProfile { get; set; }
-        //public List<SeriesView> SeriesListView { get; set; }
-        public List<StatusViewModel> ViewingStatuses { get; set; }
+        public List<ViewingStatusTab> StatusTabs{ get; set; }
     }
-    public class StatusViewModel
+    public class ViewingStatusTab
     {
         public int SeriesCount { get; set; }
-        public ViewingStatus ViewingStatus { get; set; }  
+        public ViewingStatus ViewingStatus { get; set; }
+        public List<ProfileSeriesItem> SeriesList { get; set; }
     }
 }

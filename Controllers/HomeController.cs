@@ -47,26 +47,16 @@ namespace NeMyshows.Controllers
             var identity = (ClaimsIdentity)User.Identity;
             return Json(User.GetName());
         }
-        public IActionResult Login(string ReturnUrl)
+        public IActionResult Login()
         {
-            string redirectUri;
-            if (ReturnUrl != null)
+            return Challenge(new AuthenticationProperties
             {
-                redirectUri = ReturnUrl;
-            }
-            else
-            {
-                redirectUri = Request.Headers["Referer"].ToString();
-            }
-            return Challenge(new AuthenticationProperties 
-            { 
-                RedirectUri = redirectUri
+                RedirectUri = Request.Headers["Referer"].ToString()
             }, OpenIdConnectDefaults.AuthenticationScheme);
         }
         public IActionResult Register()
         {
-            string RedirectUri = Request.Headers["Referer"].ToString();
-            return Redirect("https://localhost:9001/Account/Register?ReturnUrl="+RedirectUri);
+            return Redirect("https://localhost:9001/Account/Register");
             //return Challenge(new AuthenticationProperties
             //{
             //    RedirectUri = Request.Headers["Referer"].ToString()

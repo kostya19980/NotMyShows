@@ -77,7 +77,23 @@
     margin-left: -24px;
 }
 .tab-item {
+    display: inline-block;
     margin-left: 24px;
+}
+.tab-item input[type=radio] {
+    display: none;
+}
+
+.tab-item label {
+    font: var(--font-18-Medium);
+    color: var(--color-text-secondary);
+    user-select: none;
+    cursor: pointer;
+}
+/* Checked */
+.tab-item input[type=radio]:checked + label > .viewing-status-name {
+    color: var(--color-text-heading);
+    border-bottom: 2px solid var(--color-accent-purple);
 }
 .tab-item > a {
     display: flex;

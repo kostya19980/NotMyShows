@@ -8,38 +8,49 @@ namespace NotMyShows.ViewModel
     public class SeriesView
     {
         public Series Series { get; set; }
-        public string StatusColor { get; set; }
+        public string StatusColorName { get; set; }
+        public string CurrentViewingStatus { get; set; }
+        public string[] ViewingStatuses = new string[] { "Смотрю", "Запланировано", "Отложено" };
         public SeriesView(Series series)
         {
-            StatusColor statusColor = new StatusColor();
-            StatusColor = statusColor.GetColor(series.Status.Name);
-            statusColor.SetNewStatusName(series.Status);
+            StatusColorName = StatusColor.GetColor(series.Status.Name);
+            series.Status.Name = StatusColor.GetNewStatusName(series.Status.Name);
             Series = series;
         }
     }
     public class StatusColor
     {
-        public Dictionary<string, StatusDictionary> statusDict = new Dictionary<string, StatusDictionary>();
-        public StatusColor()
-        {
-            statusDict.Add("TBD/On The Bubble", new StatusDictionary { Color = "#F9CC00", StatusName = "PAUSE" });
-            statusDict.Add("PAUSE", new StatusDictionary { Color = "#F9CC00", StatusName = "PAUSE" });
-            statusDict.Add("Returning Series", new StatusDictionary { Color = "#35BF43", StatusName = "ON AIR" });
-            statusDict.Add("In Development", new StatusDictionary { Color = "#35BF43", StatusName = "ON AIR" });
-            statusDict.Add("ON AIR", new StatusDictionary { Color = "#35BF43", StatusName = "ON AIR" });
-            statusDict.Add("Canceled/Ended", new StatusDictionary { Color = "#FF3E1C", StatusName = "DEAD" });
-            statusDict.Add("DEAD", new StatusDictionary { Color = "#FF3E1C", StatusName = "DEAD" });
-            statusDict.Add("New Series", new StatusDictionary { Color = "var(--color-accent-purple)", StatusName = "NEW" });
-            statusDict.Add("NEW", new StatusDictionary { Color = "var(--color-accent-purple)", StatusName = "NEW" });
+        public static Dictionary<string, StatusDictionary> statusDict = new Dictionary<string, StatusDictionary>() {
+            { "TBD/On The Bubble", new StatusDictionary { Color = "#F9CC00", StatusName = "PAUSE" } },
+            { "PAUSE", new StatusDictionary { Color = "#F9CC00", StatusName = "PAUSE" } },
+            { "Returning Series", new StatusDictionary { Color = "#35BF43", StatusName = "ON AIR" } },
+            { "In Development", new StatusDictionary { Color = "#35BF43", StatusName = "ON AIR" } },
+            { "ON AIR", new StatusDictionary { Color = "#35BF43", StatusName = "ON AIR" } },
+            { "Canceled/Ended", new StatusDictionary { Color = "#FF3E1C", StatusName = "DEAD" } },
+            { "DEAD", new StatusDictionary { Color = "#FF3E1C", StatusName = "DEAD" } },
+            { "New Series", new StatusDictionary { Color = "var(--color-accent-purple)", StatusName = "NEW" } },
+            { "NEW", new StatusDictionary { Color = "var(--color-accent-purple)", StatusName = "NEW" } }
+        };
+        //public StatusColor()
+        //{
+        //    statusDict.Add("TBD/On The Bubble", new StatusDictionary { Color = "#F9CC00", StatusName = "PAUSE" });
+        //    statusDict.Add("PAUSE", new StatusDictionary { Color = "#F9CC00", StatusName = "PAUSE" });
+        //    statusDict.Add("Returning Series", new StatusDictionary { Color = "#35BF43", StatusName = "ON AIR" });
+        //    statusDict.Add("In Development", new StatusDictionary { Color = "#35BF43", StatusName = "ON AIR" });
+        //    statusDict.Add("ON AIR", new StatusDictionary { Color = "#35BF43", StatusName = "ON AIR" });
+        //    statusDict.Add("Canceled/Ended", new StatusDictionary { Color = "#FF3E1C", StatusName = "DEAD" });
+        //    statusDict.Add("DEAD", new StatusDictionary { Color = "#FF3E1C", StatusName = "DEAD" });
+        //    statusDict.Add("New Series", new StatusDictionary { Color = "var(--color-accent-purple)", StatusName = "NEW" });
+        //    statusDict.Add("NEW", new StatusDictionary { Color = "var(--color-accent-purple)", StatusName = "NEW" });
 
-        }
-        public string GetColor(string StatusName)
+        //}
+        public static string GetColor(string StatusName)
         {
             return statusDict[StatusName].Color;
         }
-        public void SetNewStatusName(Status status)
+        public static string GetNewStatusName(string StatusName)
         {
-            status.Name = statusDict[status.Name].StatusName;
+            return statusDict[StatusName].StatusName;
         }
     }
     public class StatusDictionary

@@ -183,23 +183,41 @@
     margin-top: 24px;
     margin-left: -12px;
 }
-.viewing-status-button {
+/*////////////////////////////////////////////////////*/
+.viewing-status-radio-button {
+    display: inline-block;
+    margin-left: 12px;
+}
+.viewing-status-radio-button input[type=radio] {
+    display: none;
+}
+.viewing-status-radio-button label {
     padding: 8px 16px;
     height: 40px;
     background: #2E2E30;
     border: none;
     border-radius: 8px;
-    margin-left: 12px;
     font: var(--font-16-Medium);
     color: var(--color-text-secondary);
+    user-select: none;
+    cursor: pointer;
 }
-.viewing-status-button-selected {
+/* Checked */
+.viewing-status-radio-button input[type=radio]:checked + label {
     color: var(--color-text-heading);
     background: #5537EE;
 }
-.viewing-status-button:focus {
-    outline: none;
-}
+    /* Hover */
+    /*.viewing-status-radio-button label:hover {
+        color: #666;
+    }*/
+
+    /* Disabled */
+    /*.viewing-status-radio-button input[type=radio]:disabled + label {
+        background: #efefef;
+        color: #666;
+    }*/
+/*///////////////////////////////////////////////////*/
 .series-info {
     display: flex;
     flex-direction: column;
