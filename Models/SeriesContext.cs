@@ -13,12 +13,12 @@ namespace NotMyShows.Models
         public DbSet<Raitings> Raitings { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
-        public DbSet<ViewingStatus> ViewingStatuses { get; set; }
+        public DbSet<WatchStatus> WatchStatuses { get; set; }
 
         public SeriesContext(DbContextOptions<SeriesContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -67,10 +67,10 @@
         @foreach (var item in Model.StatusTabs)
         {
         <div class="tab-item">
-            <input id="@item.ViewingStatus.Id" type="radio" name="radio" value="@item.ViewingStatus.StatusName">
-            <label for="@item.ViewingStatus.Id">
-                <span class="viewing-status-name">@item.ViewingStatus.StatusName</span>
-                <span class="viewing-status-count">@item.SeriesCount</span>
+            <input id="@item.WatchStatus.Id" type="radio" name="radio" value="@item.WatchStatus.StatusName">
+            <label for="@item.WatchStatus.Id">
+                <span class="watch-status-name">@item.WatchStatus.StatusName</span>
+                <span class="watch-status-count">@item.SeriesCount</span>
             </label>
         </div>
         }
@@ -78,7 +78,7 @@
     <div>
         @foreach (var tab in Model.StatusTabs)
         {
-        <div id="@tab.ViewingStatus.StatusName" class="profile-series-cards-container" style="display: none">
+        <div id="@tab.WatchStatus.StatusName" class="profile-series-cards-container" style="display: none">
             @foreach (var series in tab.SeriesList)
             {
                 <a class="series-search-card profile-series-card" asp-controller="UserProfile" asp-action="Series" asp-route-SeriesId="@series.Id">

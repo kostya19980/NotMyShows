@@ -9,8 +9,8 @@ namespace NotMyShows.ViewModel
     {
         public Series Series { get; set; }
         public string StatusColorName { get; set; }
-        public string CurrentViewingStatus { get; set; }
-        public string[] ViewingStatuses = new string[] { "Смотрю", "Запланировано", "Отложено" };
+        public string CurrentWatchStatus { get; set; }
+        public string[] WatchStatuses = new string[] { "Смотрю", "Запланировано", "Отложено" };
         public SeriesView(Series series)
         {
             StatusColorName = StatusColor.GetColor(series.Status.Name);

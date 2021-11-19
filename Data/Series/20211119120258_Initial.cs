@@ -74,7 +74,7 @@ namespace NotMyShows.Data.Series
                 });
 
             migrationBuilder.CreateTable(
-                name: "ViewingStatuses",
+                name: "WatchStatuses",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -83,7 +83,7 @@ namespace NotMyShows.Data.Series
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ViewingStatuses", x => x.Id);
+                    table.PrimaryKey("PK_WatchStatuses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,8 +230,8 @@ namespace NotMyShows.Data.Series
                 {
                     SeriesId = table.Column<int>(type: "int", nullable: false),
                     UserProfileId = table.Column<int>(type: "int", nullable: false),
-                    SeriesRaiting = table.Column<int>(type: "int", nullable: false),
-                    ViewingStatusId = table.Column<int>(type: "int", nullable: false)
+                    UserRaiting = table.Column<int>(type: "int", nullable: false),
+                    WatchStatusId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -249,9 +249,9 @@ namespace NotMyShows.Data.Series
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserSeries_ViewingStatuses_ViewingStatusId",
-                        column: x => x.ViewingStatusId,
-                        principalTable: "ViewingStatuses",
+                        name: "FK_UserSeries_WatchStatuses_WatchStatusId",
+                        column: x => x.WatchStatusId,
+                        principalTable: "WatchStatuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -299,9 +299,9 @@ namespace NotMyShows.Data.Series
                 column: "UserProfileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserSeries_ViewingStatusId",
+                name: "IX_UserSeries_WatchStatusId",
                 table: "UserSeries",
-                column: "ViewingStatusId");
+                column: "WatchStatusId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -331,7 +331,7 @@ namespace NotMyShows.Data.Series
                 name: "UserProfiles");
 
             migrationBuilder.DropTable(
-                name: "ViewingStatuses");
+                name: "WatchStatuses");
 
             migrationBuilder.DropTable(
                 name: "Channel");

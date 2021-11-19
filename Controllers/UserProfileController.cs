@@ -22,13 +22,13 @@ namespace NotMyShows.Controllers
         }
         public async Task<IActionResult> UserProfile()
         {
-            List<ViewingStatus> viewingStatuses = await db.ViewingStatuses.ToListAsync();
+            List<WatchStatus> watchStatuses = await db.WatchStatuses.ToListAsync();
             UserProfile profile = await GetUserProfile(true);
-            List<ViewingStatusTab> statusTabs = new List<ViewingStatusTab>();
-            foreach(var status in viewingStatuses)
+            List<WatchStatusTab> statusTabs = new List<WatchStatusTab>();
+            foreach(var status in watchStatuses)
             {
                 List<ProfileSeriesItem> TabSeriesList = new List<ProfileSeriesItem>();
-                foreach (var item in profile.UserSeries.Where(x=>x.ViewingStatusId == status.Id))
+                foreach (var item in profile.UserSeries.Where(x=>x.WatchStatusId == status.Id))
                 {
                     ProfileSeriesItem seriesItem = new ProfileSeriesItem
                     {
@@ -44,10 +44,10 @@ namespace NotMyShows.Controllers
                     };
                     TabSeriesList.Add(seriesItem);
                 }
-                ViewingStatusTab tab = new ViewingStatusTab
+                WatchStatusTab tab = new WatchStatusTab
                 {
-                    ViewingStatus = status,
-                    SeriesCount = profile.UserSeries.Where(x => x.ViewingStatusId == status.Id).Count(),
+                    WatchStatus = status,
+                    SeriesCount = profile.UserSeries.Where(x => x.WatchStatusId == status.Id).Count(),
                     SeriesList = TabSeriesList
                 };
                 statusTabs.Add(tab);
@@ -90,27 +90,28 @@ namespace NotMyShows.Controllers
             var userSeries = profile.UserSeries.FirstOrDefault(x => x.SeriesId == SeriesId);
             if (userSeries != null)
             {
-                var viewingStatus = await db.ViewingStatuses.FirstOrDefaultAsync(x => x.Id == userSeries.ViewingStatusId);
-                model.CurrentViewingStatus = viewingStatus.StatusName;
+                var watchStatus = await db.WatchStatuses.FirstOrDefaultAsync(x => x.Id == userSeries.WatchStatusId);
+                model.CurrentWatchStatus = watchStatus.StatusName;
             }
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> SelectViewingStatus(int SeriesId, string StatusName)
+        public async Task<IActionResult> SelectWatchStatus(int SeriesId, string StatusName)
         {
             string UserSub = User.GetSub();
             UserProfile userProfile = await db.UserProfiles.Include(us=>us.UserSeries).FirstOrDefaultAsync(x => x.UserSub == UserSub);
             if (userProfile != null)
             {
-                ViewingStatus status = await db.ViewingStatuses.FirstOrDefaultAsync(x => x.StatusName == StatusName);
+                WatchStatus status = await db.WatchStatuses.FirstOrDefaultAsync(x => x.StatusName == StatusName);
                 UserSeries userSeries = userProfile.UserSeries.FirstOrDefault(x => x.SeriesId == SeriesId);
-                if (userSeries != null && userSeries.ViewingStatusId == status.Id)
+                if (userSeries != null && userSeries.WatchStatusId == status.Id)
                 {
-                    userProfile.UserSeries.Remove(userSeries);
+                    //userProfile.UserSeries.Remove(userSeries);
+                    userSeries.WatchStatus = await db.WatchStatuses.FirstOrDefaultAsync(x => x.StatusName == "Брошено");
                 }
-                if(userSeries != null && userSeries.ViewingStatusId != status.Id)
+                if(userSeries != null && userSeries.WatchStatusId != status.Id)
                 {
-                    userSeries.ViewingStatus = status;
+                    userSeries.WatchStatus = status;
                     db.Update(userSeries);
                 }
                 if(userSeries == null)
@@ -118,7 +119,7 @@ namespace NotMyShows.Controllers
                     userSeries = new UserSeries
                     {
                         SeriesId = SeriesId,
-                        ViewingStatus = status
+                        WatchStatus = status
                     };
                     userProfile.UserSeries.Add(userSeries);
                     db.Update(userProfile);
@@ -127,15 +128,15 @@ namespace NotMyShows.Controllers
             }
             return Json(userProfile);
         }
-        public async Task CreateViewingStatuses()
+        public async Task CreateWatchStatuses()
         {
-            List<ViewingStatus> list = await db.ViewingStatuses.ToListAsync();
+            List<WatchStatus> list = await db.WatchStatuses.ToListAsync();
             if (list.Count == 0)
             {
                 string[] names = { "Смотрю", "Запланировано", "Отложено", "Брошено", "Просмотрено" };
                 foreach (var name in names)
                 {
-                    ViewingStatus status = new ViewingStatus
+                    WatchStatus status = new WatchStatus
                     {
                         StatusName = name
                     };

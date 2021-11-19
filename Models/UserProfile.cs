@@ -22,16 +22,16 @@ namespace NotMyShows.Models
         public Series Series { get; set; }
         public int UserProfileId { get; set; }
         public UserProfile UserProfile { get; set; }
-        public int SeriesRaiting { get; set; }
-        public int ViewingStatusId { get; set; }
-        public ViewingStatus ViewingStatus { get; set; }
+        public int UserRaiting { get; set; }
+        public int WatchStatusId { get; set; }
+        public WatchStatus WatchStatus { get; set; }
     }
-    public class ViewingStatus
+    public class WatchStatus
     {
         public int Id { get; set; }
         public string StatusName { get; set; }
         public List<UserSeries> UserSeries { get; set; }
-        public ViewingStatus()
+        public WatchStatus()
         {
             UserSeries = new List<UserSeries>();
         }

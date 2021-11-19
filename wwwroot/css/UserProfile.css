@@ -91,7 +91,7 @@
     cursor: pointer;
 }
 /* Checked */
-.tab-item input[type=radio]:checked + label > .viewing-status-name {
+.tab-item input[type=radio]:checked + label > .watch-status-name {
     color: var(--color-text-heading);
     border-bottom: 2px solid var(--color-accent-purple);
 }

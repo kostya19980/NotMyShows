@@ -30,25 +30,25 @@
                 0/10
             </div>
         </div>
-        <div class="viewing-status-container">
+        <div class="watch-status-container">
             @{
                 int id = 1;
-                foreach (var item in Model.ViewingStatuses)
+                foreach (var item in Model.WatchStatuses)
                 {
-                    <div class="viewing-status-radio-button">
-                        <input asp-for="CurrentViewingStatus" id="ViewingStatus @id" type="radio" name="radio" value="@item">
-                        <label class="viewing-status-input" for="ViewingStatus @id">@item</label>
+                    <div class="watch-status-radio-button">
+                        <input asp-for="CurrentWatchStatus" id="WatchStatus @id" type="radio" name="radio" value="@item">
+                        <label class="watch-status-input" for="WatchStatus @id">@item</label>
                     </div>
                     id++;
                 }
             }
-            @*<button class="viewing-status-button" data="Смотрю">
+            @*<button class="watch-status-button" data="Смотрю">
             Смотрю
         </button>
-        <button class="viewing-status-button" data="Запланировано">
+        <button class="watch-status-button" data="Запланировано">
             Запланировано
         </button>
-        <button class="viewing-status-button" data="Отложено">
+        <button class="watch-status-button" data="Отложено">
             Отложено
         </button>*@
         </div>

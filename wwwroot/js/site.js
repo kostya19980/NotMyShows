@@ -191,7 +191,7 @@
         })
     });
     /*////////////////////////////////////////////////////////////////*/
-    $(".viewing-status-input").click(function (e) {
+    $(".watch-status-input").click(function (e) {
         e.preventDefault();
         $check = $(this).prev();
         var SeriesId = document.querySelector(".series-info-container").id;
@@ -204,7 +204,7 @@
         }
         $.ajax({
             type: "POST",
-            url: "/UserProfile/SelectViewingStatus",
+            url: "/UserProfile/SelectWatchStatus",
             data: { "SeriesId": SeriesId, "StatusName": StatusName },
             success: function (response) {
                 console.log(response);

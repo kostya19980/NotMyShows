@@ -272,22 +272,22 @@ namespace NotMyShows.Data.Series
                     b.Property<int>("UserProfileId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SeriesRaiting")
+                    b.Property<int>("UserRaiting")
                         .HasColumnType("int");
 
-                    b.Property<int>("ViewingStatusId")
+                    b.Property<int>("WatchStatusId")
                         .HasColumnType("int");
 
                     b.HasKey("SeriesId", "UserProfileId");
 
                     b.HasIndex("UserProfileId");
 
-                    b.HasIndex("ViewingStatusId");
+                    b.HasIndex("WatchStatusId");
 
                     b.ToTable("UserSeries");
                 });
 
-            modelBuilder.Entity("NotMyShows.Models.ViewingStatus", b =>
+            modelBuilder.Entity("NotMyShows.Models.WatchStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -299,7 +299,7 @@ namespace NotMyShows.Data.Series
 
                     b.HasKey("Id");
 
-                    b.ToTable("ViewingStatuses");
+                    b.ToTable("WatchStatuses");
                 });
 
             modelBuilder.Entity("NotMyShows.Models.Episodes", b =>
@@ -387,9 +387,9 @@ namespace NotMyShows.Data.Series
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("NotMyShows.Models.ViewingStatus", "ViewingStatus")
+                    b.HasOne("NotMyShows.Models.WatchStatus", "WatchStatus")
                         .WithMany("UserSeries")
-                        .HasForeignKey("ViewingStatusId")
+                        .HasForeignKey("WatchStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -397,7 +397,7 @@ namespace NotMyShows.Data.Series
 
                     b.Navigation("UserProfile");
 
-                    b.Navigation("ViewingStatus");
+                    b.Navigation("WatchStatus");
                 });
 
             modelBuilder.Entity("NotMyShows.Models.Channel", b =>
@@ -438,7 +438,7 @@ namespace NotMyShows.Data.Series
                     b.Navigation("UserSeries");
                 });
 
-            modelBuilder.Entity("NotMyShows.Models.ViewingStatus", b =>
+            modelBuilder.Entity("NotMyShows.Models.WatchStatus", b =>
                 {
                     b.Navigation("UserSeries");
                 });
