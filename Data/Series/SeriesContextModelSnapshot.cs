@@ -52,7 +52,7 @@ namespace NotMyShows.Data.Series
                     b.ToTable("Country");
                 });
 
-            modelBuilder.Entity("NotMyShows.Models.Episodes", b =>
+            modelBuilder.Entity("NotMyShows.Models.Episode", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -84,7 +84,7 @@ namespace NotMyShows.Data.Series
 
                     b.HasIndex("SeriesId");
 
-                    b.ToTable("Episodes");
+                    b.ToTable("Episode");
                 });
 
             modelBuilder.Entity("NotMyShows.Models.Genre", b =>
@@ -249,6 +249,24 @@ namespace NotMyShows.Data.Series
                     b.ToTable("Status");
                 });
 
+            modelBuilder.Entity("NotMyShows.Models.UserEpisodes", b =>
+                {
+                    b.Property<int>("EpisodeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("WatchDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("EpisodeId", "UserProfileId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("UserEpisodes");
+                });
+
             modelBuilder.Entity("NotMyShows.Models.UserProfile", b =>
                 {
                     b.Property<int>("Id")
@@ -302,7 +320,7 @@ namespace NotMyShows.Data.Series
                     b.ToTable("WatchStatuses");
                 });
 
-            modelBuilder.Entity("NotMyShows.Models.Episodes", b =>
+            modelBuilder.Entity("NotMyShows.Models.Episode", b =>
                 {
                     b.HasOne("NotMyShows.Models.Series", "Series")
                         .WithMany("Episodes")
@@ -373,6 +391,25 @@ namespace NotMyShows.Data.Series
                     b.Navigation("Series");
                 });
 
+            modelBuilder.Entity("NotMyShows.Models.UserEpisodes", b =>
+                {
+                    b.HasOne("NotMyShows.Models.Episode", "Episode")
+                        .WithMany("UserEpisodes")
+                        .HasForeignKey("EpisodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NotMyShows.Models.UserProfile", "UserProfile")
+                        .WithMany("UserEpisodes")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Episode");
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("NotMyShows.Models.UserSeries", b =>
                 {
                     b.HasOne("NotMyShows.Models.Series", "Series")
@@ -410,6 +447,11 @@ namespace NotMyShows.Data.Series
                     b.Navigation("Series");
                 });
 
+            modelBuilder.Entity("NotMyShows.Models.Episode", b =>
+                {
+                    b.Navigation("UserEpisodes");
+                });
+
             modelBuilder.Entity("NotMyShows.Models.Genre", b =>
                 {
                     b.Navigation("SeriesGenres");
@@ -435,6 +477,8 @@ namespace NotMyShows.Data.Series
 
             modelBuilder.Entity("NotMyShows.Models.UserProfile", b =>
                 {
+                    b.Navigation("UserEpisodes");
+
                     b.Navigation("UserSeries");
                 });
 

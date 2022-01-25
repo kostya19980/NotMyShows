@@ -7,6 +7,8 @@ namespace NotMyShows.ViewModel
         public int Id { get; set; }
         public string Title { get; set; }
         public string OriginalTitle { get; set; }
+        public int EpisodesCount { get; set; }
+        public int WatchedEpisodesCount { get; set; }
         public SeriesStatus Status { get; set; }
         public string PicturePath { get; set; }
     }

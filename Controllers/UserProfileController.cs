@@ -35,12 +35,14 @@ namespace NotMyShows.Controllers
                         Id = item.Series.Id,
                         Title = item.Series.Title,
                         OriginalTitle = item.Series.OriginalTitle,
+                        EpisodesCount = item.Series.Episodes.Count(),
                         Status = new SeriesStatus
                         {
                             Name = StatusColor.GetNewStatusName(item.Series.Status.Name),
                             StatusColorName = StatusColor.GetColor(item.Series.Status.Name)
                         },
-                        PicturePath = item.Series.PicturePath
+                        PicturePath = item.Series.PicturePath,
+                        WatchedEpisodesCount = profile.UserEpisodes.Where(x=>x.Episode.SeriesId == item.Series.Id).Count()
                     };
                     TabSeriesList.Add(seriesItem);
                 }
@@ -52,7 +54,7 @@ namespace NotMyShows.Controllers
                 };
                 statusTabs.Add(tab);
             }
-            profile.UserSeries = null;
+            //profile.UserSeries = null;
             UserProfileViewModel model = new UserProfileViewModel
             {
                 UserProfile = profile,
@@ -66,7 +68,10 @@ namespace NotMyShows.Controllers
             UserProfile profile = new UserProfile();
             if (IncludeSeries)
             {
-                profile = await db.UserProfiles.Include(s => s.UserSeries).ThenInclude(s => s.Series).ThenInclude(s => s.Status)
+                profile = await db.UserProfiles
+                    .Include(us => us.UserSeries).ThenInclude(s => s.Series).ThenInclude(s => s.Status)
+                    .Include(us => us.UserSeries).ThenInclude(s => s.Series).ThenInclude(e => e.Episodes)
+                    .Include(ue => ue.UserEpisodes).ThenInclude(e => e.Episode)
                     .FirstOrDefaultAsync(x => x.UserSub == UserSub);
             }
             else
@@ -78,21 +83,51 @@ namespace NotMyShows.Controllers
         public async Task<IActionResult> Series(int SeriesId)
         {
             Series series = await db.Series.Include(r => r.Raiting).Include(s => s.Status).Include(ch => ch.Channel)
-                .Include(c => c.Country).Include(sg => sg.SeriesGenres).ThenInclude(g=>g.Genre).Include(e => e.Episodes)
+                .Include(c => c.Country).Include(sg => sg.SeriesGenres).ThenInclude(g => g.Genre).Include(e => e.Episodes)
                 .FirstOrDefaultAsync(x => x.Id == SeriesId);
-            series.Episodes.Sort((x, y) => DateTime.Compare(x.Date ?? DateTime.MaxValue, y.Date ?? DateTime.MaxValue));
-            if (series == null)
-            {
-                return StatusCode(StatusCodes.Status404NotFound);
-            }
-            SeriesView model = new SeriesView(series);
             UserProfile profile = await GetUserProfile(true);
             var userSeries = profile.UserSeries.FirstOrDefault(x => x.SeriesId == SeriesId);
+            string CurrentWatchStatus = "";
+            List<EpisodeCheckBox> episodes = new List<EpisodeCheckBox>();
             if (userSeries != null)
             {
                 var watchStatus = await db.WatchStatuses.FirstOrDefaultAsync(x => x.Id == userSeries.WatchStatusId);
-                model.CurrentWatchStatus = watchStatus.StatusName;
+                foreach (var episode in series.Episodes)
+                {
+                    EpisodeCheckBox episodeCheckBox = new EpisodeCheckBox
+                    {
+                        Episode = episode,
+                        isChecked = profile.UserEpisodes.FirstOrDefault(x => x.EpisodeId == episode.Id) == null ? false : true
+                    };
+                    episodes.Add(episodeCheckBox);
+                }
+                CurrentWatchStatus = watchStatus.StatusName;
             }
+            else
+            {
+                foreach (var episode in series.Episodes)
+                {
+                    EpisodeCheckBox episodeCheckBox = new EpisodeCheckBox
+                    {
+                        Episode = episode,
+                        isChecked = false
+                    };
+                    episodes.Add(episodeCheckBox);
+                }
+            }
+            episodes.Sort((x, y) => DateTime.Compare(x.Episode.Date ?? DateTime.MaxValue, y.Episode.Date ?? DateTime.MaxValue));
+            SeriesView model = new SeriesView
+            {
+                StatusColorName = StatusColor.GetColor(series.Status.Name),
+                Series = series,
+                CurrentWatchStatus = CurrentWatchStatus,
+                Episodes = episodes
+            };
+            model.Series.Status.Name = StatusColor.GetNewStatusName(series.Status.Name);
+            //if (series == null)
+            //{
+            //    return StatusCode(StatusCodes.Status404NotFound);
+            //}
             return View(model);
         }
         [HttpPost]
@@ -128,21 +163,62 @@ namespace NotMyShows.Controllers
             }
             return Json(userProfile);
         }
+        [HttpPost]
+        public async Task<IActionResult> CheckEpisode(int EpisodeId)
+        {
+            string UserSub = User.GetSub();
+            UserProfile userProfile = await db.UserProfiles.Include(ue => ue.UserEpisodes).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            UserEpisodes userEpisode = userProfile.UserEpisodes.FirstOrDefault(x => x.EpisodeId == EpisodeId);
+            if(userEpisode == null)
+            {
+                userEpisode = new UserEpisodes
+                {
+                    EpisodeId = EpisodeId,
+                    WatchDate = DateTime.Now
+                };
+                userProfile.UserEpisodes.Add(userEpisode);
+            }
+            else
+            {
+                userProfile.UserEpisodes.Remove(userEpisode);
+            }
+            db.Update(userProfile);
+            await db.SaveChangesAsync();
+            return Json(userProfile.UserEpisodes);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CheckEpisodes(int[] EpisodesId)
+        {
+            string UserSub = User.GetSub();
+            UserProfile userProfile = await db.UserProfiles.Include(ue => ue.UserEpisodes).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            foreach(int episodeId in EpisodesId)
+            {
+                UserEpisodes userEpisode = userProfile.UserEpisodes.FirstOrDefault(x => x.EpisodeId == episodeId);
+                if (userEpisode == null)
+                {
+                    userEpisode = new UserEpisodes
+                    {
+                        EpisodeId = episodeId,
+                        WatchDate = DateTime.Now
+                    };
+                    userProfile.UserEpisodes.Add(userEpisode);
+                }
+            }
+            db.Update(userProfile);
+            await db.SaveChangesAsync();
+            return Json(userProfile.UserEpisodes);
+        }
         public async Task CreateWatchStatuses()
         {
-            List<WatchStatus> list = await db.WatchStatuses.ToListAsync();
-            if (list.Count == 0)
+            string[] names = { "Смотрю", "Запланировано", "Отложено", "Брошено", "Просмотрено" };
+            foreach (var name in names)
             {
-                string[] names = { "Смотрю", "Запланировано", "Отложено", "Брошено", "Просмотрено" };
-                foreach (var name in names)
+                WatchStatus status = new WatchStatus
                 {
-                    WatchStatus status = new WatchStatus
-                    {
-                        StatusName = name
-                    };
-                    await db.AddAsync(status);
-                    await db.SaveChangesAsync();
-                }
+                    StatusName = name
+                };
+                await db.AddAsync(status);
+                await db.SaveChangesAsync();
             }
         }
         public async Task<IActionResult> CreateUserProfile()

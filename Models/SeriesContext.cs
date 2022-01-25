@@ -50,7 +50,20 @@ namespace NotMyShows.Models
                 .WithMany(us => us.UserSeries)
                 .HasForeignKey(u => u.UserProfileId);
             base.OnModelCreating(modelBuilder);
+            //UserEpisodes
+            modelBuilder.Entity<UserEpisodes>()
+                .HasKey(k => new { k.EpisodeId, k.UserProfileId });
 
+            modelBuilder.Entity<UserEpisodes>()
+                .HasOne(e => e.Episode)
+                .WithMany(ue => ue.UserEpisodes)
+                .HasForeignKey(e => e.EpisodeId);
+
+            modelBuilder.Entity<UserEpisodes>()
+                .HasOne(u => u.UserProfile)
+                .WithMany(ue => ue.UserEpisodes)
+                .HasForeignKey(u => u.UserProfileId);
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

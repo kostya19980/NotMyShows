@@ -186,24 +186,24 @@
                 </button>
             </div>
             <div class="episodes">
-                @foreach (var episode in Model.Series.Episodes)
+                @foreach (var checkBox in Model.Episodes)
                 {
-                    if (episode.SeasonNumber == j + 1)
+                    if (checkBox.Episode.SeasonNumber == j + 1)
                     {
                         <div class="episode">
-                            <input type="checkbox" class="custom-checkbox" id="@episode.Id">
-                            <label for="@episode.Id"></label>
+                            <input type="checkbox" class="custom-checkbox" id="@checkBox.Episode.Id" checked="@checkBox.isChecked">
+                            <label for="@checkBox.Episode.Id"></label>
                             <div class="episode-info-item" style="width: 88px;">
-                                @if(episode.Date != null)
+                                @if(checkBox.Episode.Date != null)
                                 {
-                                    @episode.Date.Value.ToShortDateString()
+                                    @checkBox.Episode.Date.Value.ToShortDateString()
                                 }
                             </div>
                             <div class="episode-info-item" style="width: 88px;">
-                                @String.Format("{0:00}", episode.EpisodeNumber)
+                                @String.Format("{0:00}", checkBox.Episode.EpisodeNumber)
                             </div>
                             <div class="episode-info-item">
-                                @episode.Title
+                                @checkBox.Episode.Title
                             </div>
                         </div>
                     }

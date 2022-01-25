@@ -102,8 +102,11 @@
                             </div>
                         </div>
                         <div class="series-progress">
-                            <progress id="file" max="100" value="70"></progress>
-                            <div class="progress-count">40/50</div>
+                            @{ 
+                                int progress = (int)(100 * ((double)series.WatchedEpisodesCount / series.EpisodesCount));
+                            }
+                            <progress max="100" value="@progress"></progress>
+                            <div class="progress-count">@series.WatchedEpisodesCount/@series.EpisodesCount</div>
                         </div>
                     </div>
                 </a>

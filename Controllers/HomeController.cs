@@ -66,10 +66,6 @@ namespace NeMyshows.Controllers
         {
             return SignOut(CookieAuthenticationDefaults.AuthenticationScheme,OpenIdConnectDefaults.AuthenticationScheme);
         }
-        public string GetSecretString()
-        {
-            return "123456";
-        }
         [HttpGet]
         public async Task<IActionResult> SeriesSearch()
         {
@@ -77,11 +73,16 @@ namespace NeMyshows.Controllers
             //    Include(sg => sg.SeriesGenres).ThenInclude(g=>g.Genre).
             //    Where(x => x.Id >= 1 && x.Id <= 100).ToListAsync();
             List<Series> series = await db.Series.Include(s => s.Status).
-                Where(x => x.Id >= 1 && x.Id <= 100).ToListAsync();
+                Where(x => x.Id >= 101 && x.Id <= 200).ToListAsync();
             List<SeriesView> seriesListView = new List<SeriesView>();
             foreach(var item in series)
             {
-                SeriesView seriesView = new SeriesView(item);
+                SeriesView seriesView = new SeriesView
+                {
+                    Series = item,
+                    StatusColorName = StatusColor.GetColor(item.Status.Name)
+                };
+                seriesView.Series.Status.Name = StatusColor.GetNewStatusName(item.Status.Name);
                 seriesListView.Add(seriesView);
             }
             SeriesViewModel model = new SeriesViewModel

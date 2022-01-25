@@ -131,7 +131,7 @@ namespace NotMyShows.Data.Series
                 });
 
             migrationBuilder.CreateTable(
-                name: "Episodes",
+                name: "Episode",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -146,9 +146,9 @@ namespace NotMyShows.Data.Series
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Episodes", x => x.Id);
+                    table.PrimaryKey("PK_Episode", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Episodes_Series_SeriesId",
+                        name: "FK_Episode_Series_SeriesId",
                         column: x => x.SeriesId,
                         principalTable: "Series",
                         principalColumn: "Id",
@@ -256,9 +256,34 @@ namespace NotMyShows.Data.Series
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserEpisodes",
+                columns: table => new
+                {
+                    EpisodeId = table.Column<int>(type: "int", nullable: false),
+                    UserProfileId = table.Column<int>(type: "int", nullable: false),
+                    WatchDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserEpisodes", x => new { x.EpisodeId, x.UserProfileId });
+                    table.ForeignKey(
+                        name: "FK_UserEpisodes_Episode_EpisodeId",
+                        column: x => x.EpisodeId,
+                        principalTable: "Episode",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserEpisodes_UserProfiles_UserProfileId",
+                        column: x => x.UserProfileId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Episodes_SeriesId",
-                table: "Episodes",
+                name: "IX_Episode_SeriesId",
+                table: "Episode",
                 column: "SeriesId");
 
             migrationBuilder.CreateIndex(
@@ -294,6 +319,11 @@ namespace NotMyShows.Data.Series
                 column: "GenreId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserEpisodes_UserProfileId",
+                table: "UserEpisodes",
+                column: "UserProfileId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserSeries_UserProfileId",
                 table: "UserSeries",
                 column: "UserProfileId");
@@ -307,9 +337,6 @@ namespace NotMyShows.Data.Series
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Episodes");
-
-            migrationBuilder.DropTable(
                 name: "Raitings");
 
             migrationBuilder.DropTable(
@@ -319,19 +346,25 @@ namespace NotMyShows.Data.Series
                 name: "SeriesGenres");
 
             migrationBuilder.DropTable(
+                name: "UserEpisodes");
+
+            migrationBuilder.DropTable(
                 name: "UserSeries");
 
             migrationBuilder.DropTable(
                 name: "Genre");
 
             migrationBuilder.DropTable(
-                name: "Series");
+                name: "Episode");
 
             migrationBuilder.DropTable(
                 name: "UserProfiles");
 
             migrationBuilder.DropTable(
                 name: "WatchStatuses");
+
+            migrationBuilder.DropTable(
+                name: "Series");
 
             migrationBuilder.DropTable(
                 name: "Channel");

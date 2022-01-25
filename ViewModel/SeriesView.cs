@@ -11,12 +11,12 @@ namespace NotMyShows.ViewModel
         public string StatusColorName { get; set; }
         public string CurrentWatchStatus { get; set; }
         public string[] WatchStatuses = new string[] { "Смотрю", "Запланировано", "Отложено" };
-        public SeriesView(Series series)
-        {
-            StatusColorName = StatusColor.GetColor(series.Status.Name);
-            series.Status.Name = StatusColor.GetNewStatusName(series.Status.Name);
-            Series = series;
-        }
+        public List<EpisodeCheckBox> Episodes { get; set; }
+    }
+    public class EpisodeCheckBox
+    {
+        public Episode Episode { get; set; }
+        public bool isChecked { get; set; }
     }
     public class StatusColor
     {

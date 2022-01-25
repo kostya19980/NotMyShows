@@ -14,7 +14,7 @@ namespace NotMyShows.Models
         public int[] GenreIds { get; set; }
         public Country Country { get; set; }
         public Raitings Raiting { get; set; }
-        public List<Episodes> Episodes { get; set; }
+        public List<Episode> Episodes { get; set; }
     }
     public class Series
     {
@@ -29,7 +29,7 @@ namespace NotMyShows.Models
         public int? StatusId { get; set; }
         public Status Status { get; set; }
         public List<SeriesGenres> SeriesGenres { get; set; }
-        public List<Episodes> Episodes { get; set; }
+        public List<Episode> Episodes { get; set; }
         public List<Review> Reviews { get; set; }
         public List<UserSeries> UserSeries { get; set; }
         public int EpisodeTime { get; set; }
@@ -48,7 +48,7 @@ namespace NotMyShows.Models
             UserSeries = new List<UserSeries>();
         }
     }
-    public class Episodes
+    public class Episode
     {
         [Key]
         public int Id { get; set; }
@@ -60,6 +60,11 @@ namespace NotMyShows.Models
         public DateTime? Date { get; set; }
         public int SeriesId { get; set; }
         public Series Series { get; set; }
+        public List<UserEpisodes> UserEpisodes { get; set; }
+        public Episode()
+        {
+            UserEpisodes = new List<UserEpisodes>();
+        }
 
     }
     public class Status

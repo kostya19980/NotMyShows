@@ -178,17 +178,13 @@
             }
         })
     })
-    var checkSeasonButtons = document.querySelectorAll(".check-season-button");
-    checkSeasonButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            var season = this.getAttribute("data");
-            var seasonContainer = document.querySelector("#" + season);
-            var episodes = seasonContainer.querySelectorAll(".episodes > .episode > .custom-checkbox");
-            episodes.forEach(episode => {
-                /*episode.checked = !episode.checked;*/
-                episode.checked = true;
-            })
-        })
+    $('.check-season-button').click(function () {
+        var season = $(this).attr("data");
+        var seasonContainer = $("#" + season);
+        var episodes = seasonContainer.find(".custom-checkbox");
+        episodes.each(function () {
+            $(this).prop("checked", true);
+        });
     });
     /*////////////////////////////////////////////////////////////////*/
     $(".watch-status-input").click(function (e) {
@@ -228,15 +224,27 @@
             checkSeasonButton.toggle();
         }
     });
-    $(".tab-item > label")[0].click();
-    var checkAllEpisodes = document.querySelector(".check-all-episodes-button");
-    checkAllEpisodes.addEventListener("click", function () {
-        var episodes = document.querySelectorAll(".custom-checkbox");
-        episodes.forEach(episode => {
-            /*            episode.checked = !episode.checked;*/
-            episode.checked = true;
-        })
+    $('.check-all-episodes-button').click(function () {
+        $('.custom-checkbox').each(function () {
+            $(this).prop("checked", true);
+        });
+        //episodes.forEach(episode => {
+        //    /*            episode.checked = !episode.checked;*/
+        //    episode.prop("checked", true);
+        //})
+    });
+    $(".custom-checkbox").click(function () {
+        var episodeId = $(this).attr("id");
+        $.ajax({
+            type: "POST",
+            url: "/UserProfile/CheckEpisode",
+            data: { "EpisodeId": episodeId },
+            success: function (response) {
+                console.log(response);
+            }
+        });
     })
+    //$(".tab-item > label")[0].click();
 
 });
 function SendOtherInfo(data) {

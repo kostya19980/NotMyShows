@@ -27,7 +27,6 @@ namespace NotMyShows.Controllers
         public async Task<IEnumerable<Series>> GetSeries()
         {
             var series = await _context.Series.Include(s=>s.Status).Include(ch=>ch.Channel)
-                .Where(x => x.Id >= 1 && x.Id <= 100)
                 .Select(s => new Series
                 {
                     Id = s.Id,
@@ -48,7 +47,7 @@ namespace NotMyShows.Controllers
         public async Task<ActionResult<Series>> GetSeriesById(int id)
         {
             var series = await _context.Series.Include(e=>e.Episodes).Include(r => r.Raiting).Include(s => s.Status).Include(ch => ch.Channel).Include(c => c.Country)
-                .Include(rev => rev.Reviews).Include(sg => sg.SeriesGenres).ThenInclude(g => g.Genre).FirstOrDefaultAsync(x=>x.Id==id);
+                .Include(sg => sg.SeriesGenres).ThenInclude(g => g.Genre).FirstOrDefaultAsync(x=>x.Id==id);
 
             if (series == null)
             {
