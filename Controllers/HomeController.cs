@@ -73,7 +73,7 @@ namespace NeMyshows.Controllers
             //    Include(sg => sg.SeriesGenres).ThenInclude(g=>g.Genre).
             //    Where(x => x.Id >= 1 && x.Id <= 100).ToListAsync();
             List<Series> series = await db.Series.Include(s => s.Status).
-                Where(x => x.Id >= 101 && x.Id <= 200).ToListAsync();
+                Where(x => x.Id >= 1 && x.Id <= 100).ToListAsync();
             List<SeriesView> seriesListView = new List<SeriesView>();
             foreach(var item in series)
             {

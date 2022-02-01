@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NotMyShows.Models;
 
 namespace NotMyShows.Data.Series
 {
     [DbContext(typeof(SeriesContext))]
-    partial class SeriesContextModelSnapshot : ModelSnapshot
+    [Migration("20220201203725_NewUserProfileDB")]
+    partial class NewUserProfileDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

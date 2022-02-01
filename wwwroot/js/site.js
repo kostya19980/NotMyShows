@@ -178,12 +178,31 @@
             }
         })
     })
+    function CheckFirsttWatchStatus()
+    {
+        var statusElem = $($(".watch-status-input")[0]).prev();
+        statusElem.prop("checked", true);
+    }
     $('.check-season-button').click(function () {
         var season = $(this).attr("data");
         var seasonContainer = $("#" + season);
         var episodes = seasonContainer.find(".custom-checkbox");
+        var checkedIds = [];
         episodes.each(function () {
             $(this).prop("checked", true);
+            var currentId = $(this).attr("id");
+            checkedIds.push(currentId);
+        });
+        var seriesId = $(".series-info-container").attr("id");
+        $.ajax({
+            type: "POST",
+            url: "/UserProfile/CheckEpisodes",
+            data: { "CheckedIds": checkedIds, "SeriesId": seriesId},
+            success: function (response) {
+                console.log("Отмечен весь сезон");
+                console.log(response);
+                CheckFirsttWatchStatus();
+            }
         });
     });
     /*////////////////////////////////////////////////////////////////*/
@@ -225,8 +244,22 @@
         }
     });
     $('.check-all-episodes-button').click(function () {
+        var checkedIds = [];
         $('.custom-checkbox').each(function () {
             $(this).prop("checked", true);
+            var currentId = $(this).attr("id");
+            checkedIds.push(currentId);
+        });
+        var seriesId = $(".series-info-container").attr("id");
+        $.ajax({
+            type: "POST",
+            url: "/UserProfile/CheckEpisodes",
+            data: { "CheckedIds": checkedIds, "SeriesId": seriesId},
+            success: function (response) {
+                console.log("Отмечен весь сериал");
+                console.log(response);
+                CheckFirsttWatchStatus();
+            }
         });
         //episodes.forEach(episode => {
         //    /*            episode.checked = !episode.checked;*/
@@ -235,12 +268,15 @@
     });
     $(".custom-checkbox").click(function () {
         var episodeId = $(this).attr("id");
+        var seriesId = $(".series-info-container").attr("id");
         $.ajax({
             type: "POST",
             url: "/UserProfile/CheckEpisode",
-            data: { "EpisodeId": episodeId },
+            data: { "EpisodeId": episodeId, "SeriesId": seriesId},
             success: function (response) {
+                console.log("Отмечена серия");
                 console.log(response);
+                CheckFirsttWatchStatus();
             }
         });
     })

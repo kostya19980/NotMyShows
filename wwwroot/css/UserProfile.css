@@ -166,13 +166,11 @@ progress::-webkit-progress-bar {
 
 progress::-webkit-progress-value {
     background: var(--color-accent-purple);
-    border-bottom-left-radius: 4px;
-    border-top-left-radius: 4px;
+    border-radius: 4px;
 }
 progress::-moz-progress-bar {
     background: var(--color-accent-purple);
-    border-bottom-left-radius: 4px;
-    border-top-left-radius: 4px;
+    border-radius: 4px;
 }
 .progress-count {
     font: var(--font-12-12-Medium);

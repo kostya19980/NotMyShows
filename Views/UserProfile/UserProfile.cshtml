@@ -7,7 +7,7 @@
 <div class="profile-container">
     <div class="user-info">
         <div class="user-avatar">
-
+            <img src="\@Html.Raw(Model.UserProfile.ImageSrc)"/>
         </div>
         <div class="user-name">
             @User.GetName()
@@ -22,7 +22,7 @@
     <div class="user-stats">
         <div class="stat-item">
             <div class="stat-number">
-                2 338
+                @Model.ProfileStats.EpisodesCount.ToString("N0")
             </div>
             <div class="stat-name">
                 Просмотрено эпизодов
@@ -30,7 +30,7 @@
         </div>
         <div class="stat-item">
             <div class="stat-number">
-                25
+                @Model.ProfileStats.SeriesCount.ToString("N0")
             </div>
             <div class="stat-name">
                 Просмотрено сериалов
@@ -38,7 +38,7 @@
         </div>
         <div class="stat-item">
             <div class="stat-number">
-                1 624
+                @Model.ProfileStats.HoursSpent.ToString("N0")
             </div>
             <div class="stat-name">
                 Потрачено часов
@@ -46,7 +46,7 @@
         </div>
         <div class="stat-item">
             <div class="stat-number">
-                68
+                @((Model.ProfileStats.HoursSpent/24).ToString("N0"))
             </div>
             <div class="stat-name">
                 Потрачено дней
@@ -54,7 +54,7 @@
         </div>
         <div class="stat-item">
             <div class="stat-number">
-                2
+                @Model.ProfileStats.AchievementsCount
             </div>
             <div class="stat-name">
                 Получено достижений
