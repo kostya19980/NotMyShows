@@ -32,7 +32,7 @@ namespace NeMyshows.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("UserProfile", "Profiles");
+                return RedirectToAction("Profile", "Profiles");
             }
             return View();
         }

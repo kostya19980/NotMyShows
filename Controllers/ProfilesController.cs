@@ -14,16 +14,16 @@ using System.Threading.Tasks;
 namespace NotMyShows.Controllers
 {
     [Authorize]
-    public class UserProfileController : Controller
+    public class ProfilesController : Controller
     {
         readonly SeriesContext db;
         readonly private IHostingEnvironment _env;
-        public UserProfileController(SeriesContext context, IHostingEnvironment env)
+        public ProfilesController(SeriesContext context, IHostingEnvironment env)
         {
             db = context;
             _env = env;
         }
-        public async Task<IActionResult> Profiles()
+        public async Task<IActionResult> Profile()
         {
             List<WatchStatus> watchStatuses = await db.WatchStatuses.ToListAsync();
             UserProfile profile = await GetUserProfile(true);
@@ -73,7 +73,7 @@ namespace NotMyShows.Controllers
                 StatusTabs = statusTabs,
                 ProfileStats = profileStats
             };
-            return View(model);
+            return View("UserProfile", model);
         }
         public async Task<UserProfile> GetUserProfile(bool IncludeSeries)
         {
@@ -322,7 +322,7 @@ namespace NotMyShows.Controllers
             };
             await db.AddAsync(userProfile);
             await db.SaveChangesAsync();
-            return RedirectToAction("Profiles");
+            return RedirectToAction("Profile");
         }
         public async Task<JsonResult> UploadImage(IFormFile ImageFile)
         {
