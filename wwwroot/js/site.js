@@ -193,7 +193,7 @@
             var currentId = $(this).attr("id");
             checkedIds.push(currentId);
         });
-        var seriesId = $(".series-info-container").attr("id");
+        var seriesId = $(".series-info-container").attr("value");
         $.ajax({
             type: "POST",
             url: "/UserProfile/CheckEpisodes",
@@ -205,11 +205,78 @@
             }
         });
     });
+    $(function () {
+        if ($("input:radio[name=status-radio]").is(":checked")) {
+            $(".series-raiting").css("display", "flex");
+        }
+    });
+    $("#upload-image").on('change', function () {
+        var file = this.files;
+        if (file && file[0]) {
+            readImage(file[0]);
+            var ImageFile = $(this).get(0).files[0];
+            var data = new FormData;
+            data.append("ImageFile", ImageFile);
+            console.log(ImageFile);
+            $.ajax({
+                type: "Post",
+                url: "/UserProfile/UploadImage",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    console.log(result);
+                }
+            })
+        }
+    });
+    function readImage(file) {
+        var reader = new FileReader;
+        var image = new Image;
+        reader.readAsDataURL(file);
+        reader.onload = function (file) {
+            image.src = file.target.result;
+            image.onload = function () {
+                $("#avatar-img").attr('src', image.src);
+            }
+        }
+    }
+    $(".star").click(function () {
+        var currentStar = Number($(this).attr("value"));
+        var SeriesId = $(".series-info-container").attr("value");
+        $.ajax({
+            type: "POST",
+            url: "/UserProfile/SelectSeriesRaiting",
+            data: { "UserRaiting": currentStar, "SeriesId": SeriesId },
+            success: function (response) {
+                $(".raiting-number").attr("value", currentStar);
+                $(".raiting-number").text(currentStar + "/10");
+                $("#our-raiting").text(response);
+            }
+        });
+    })
+    $(".star").hover(function () { // задаем функцию при наведении курсора на элемент
+        var currentStar = $(this).attr("value");
+        for (var i = 0; i < currentStar; i++) {
+            $("#star-" + i).css("fill", "var(--color-accent-purple)");
+        }
+        for (var i = 9; i >= currentStar; i--) {
+            $("#star-" + i).css("fill", "none");
+        }
+    }, function () { // задаем функцию, которая срабатывает, когда указатель выходит из элемента 	
+        var userRaiting = $(".raiting-number").attr("value");
+        for (var i = 0; i < userRaiting; i++) {
+            $("#star-" + i).css("fill", "var(--color-accent-purple)");
+        }
+        for (var i = 9; i >= userRaiting; i--) {
+            $("#star-" + i).css("fill", "none");
+        }
+    });
     /*////////////////////////////////////////////////////////////////*/
     $(".watch-status-input").click(function (e) {
         e.preventDefault();
         $check = $(this).prev();
-        var SeriesId = document.querySelector(".series-info-container").id;
+        var SeriesId = $(".series-info-container").attr("value");
         var StatusName = $check.attr("value");
         if ($check.prop('checked')) {
             $check.prop("checked", false);
@@ -222,7 +289,7 @@
             url: "/UserProfile/SelectWatchStatus",
             data: { "SeriesId": SeriesId, "StatusName": StatusName },
             success: function (response) {
-                console.log(response);
+                $(".series-raiting").css("display", "flex");
             }
         });
     });
@@ -250,7 +317,7 @@
             var currentId = $(this).attr("id");
             checkedIds.push(currentId);
         });
-        var seriesId = $(".series-info-container").attr("id");
+        var seriesId = $(".series-info-container").attr("value");
         $.ajax({
             type: "POST",
             url: "/UserProfile/CheckEpisodes",
@@ -268,7 +335,7 @@
     });
     $(".custom-checkbox").click(function () {
         var episodeId = $(this).attr("id");
-        var seriesId = $(".series-info-container").attr("id");
+        var seriesId = $(".series-info-container").attr("value");
         $.ajax({
             type: "POST",
             url: "/UserProfile/CheckEpisode",
@@ -280,7 +347,7 @@
             }
         });
     })
-    //$(".tab-item > label")[0].click();
+    $(".tab-item > label")[0].click();
 
 });
 function SendOtherInfo(data) {

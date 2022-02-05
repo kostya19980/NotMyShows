@@ -112,6 +112,7 @@ namespace NotMyShows.Models
     {
         public int Id { get; set; }
         public float Raiting { get; set; }
+        public int Votes { get; set; }
         public int? KinopoiskId { get; set; }
         public float Kinopoisk { get; set; }
         public int? ImdbId { get; set; }

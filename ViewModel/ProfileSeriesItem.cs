@@ -11,6 +11,7 @@ namespace NotMyShows.ViewModel
         public int WatchedEpisodesCount { get; set; }
         public SeriesStatus Status { get; set; }
         public string PicturePath { get; set; }
+        public float UserRaiting { get; set; }
     }
     public class SeriesStatus
     {

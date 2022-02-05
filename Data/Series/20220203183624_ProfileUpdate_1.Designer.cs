@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NotMyShows.Models;
 
 namespace NotMyShows.Data.Series
 {
     [DbContext(typeof(SeriesContext))]
-    partial class SeriesContextModelSnapshot : ModelSnapshot
+    [Migration("20220203183624_ProfileUpdate_1")]
+    partial class ProfileUpdate_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,9 +127,6 @@ namespace NotMyShows.Data.Series
                         .HasColumnType("real");
 
                     b.Property<int?>("SeriesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Votes")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

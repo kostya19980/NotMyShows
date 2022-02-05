@@ -7,7 +7,7 @@
     <div class="series-cover-container">
         <img src="\@Html.Raw(Model.Series.PicturePath)" class="series-cover" />
     </div>
-    <div class="series-info-container" id="@Model.Series.Id">
+    <div class="series-info-container" value="@Model.Series.Id">
         <div class="series-titles-container">
             <div class="russian-title-container">
                 <label class="russian-title">@Model.Series.Title</label>
@@ -19,15 +19,21 @@
         </div>
         <div class="series-raiting">
             <div class="stars-container">
-                @for (int i = 0; i < 10; i++)
+                @for (int i = 0; i < Model.UserRaiting; i++)
                 {
-                    <svg>
+                    <svg class="star" id="star-@i" value="@(i+1)" style="fill: var(--color-accent-purple)">
+                        <use xlink:href="/Icons/outline/24/star.svg#star_icon"></use>
+                    </svg>
+                }
+                @for (int i = Model.UserRaiting; i < 10; i++)
+                {
+                    <svg class="star" id="star-@i" value="@(i+1)">
                         <use xlink:href="/Icons/outline/24/star.svg#star_icon"></use>
                     </svg>
                 }
             </div>
-            <div class="raiting-number">
-                0/10
+            <div class="raiting-number" value="@Model.UserRaiting">
+                @Model.UserRaiting/10
             </div>
         </div>
         <div class="watch-status-container">
@@ -35,10 +41,20 @@
                 int id = 1;
                 foreach (var item in Model.WatchStatuses)
                 {
-                    <div class="watch-status-radio-button">
-                        <input asp-for="CurrentWatchStatus" id="WatchStatus @id" type="radio" name="radio" value="@item">
-                        <label class="watch-status-input" for="WatchStatus @id">@item</label>
-                    </div>
+                    if (item == "Просмотрено")
+                    {
+                        <div class="watch-status-radio-button" style="display:none">
+                            <input asp-for="CurrentWatchStatus" id="WatchStatus @id" type="radio" name="status-radio" value="@item">
+                            <label class="watch-status-input" for="WatchStatus @id">@item</label>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="watch-status-radio-button">
+                            <input asp-for="CurrentWatchStatus" id="WatchStatus @id" type="radio" name="status-radio" value="@item">
+                            <label class="watch-status-input" for="WatchStatus @id">@item</label>
+                        </div>
+                    }
                     id++;
                 }
             }
@@ -144,7 +160,7 @@
             </div>
             <div class="info-item">
                 <div class="info-label">Рейтинг 01shows:</div>
-                <div class="info">
+                <div class="info" id="our-raiting">
                     @Model.Series.Raiting.Raiting
                 </div>
             </div>
@@ -194,7 +210,7 @@
                             <input type="checkbox" class="custom-checkbox" id="@checkBox.Episode.Id" checked="@checkBox.isChecked">
                             <label for="@checkBox.Episode.Id"></label>
                             <div class="episode-info-item" style="width: 88px;">
-                                @if(checkBox.Episode.Date != null)
+                                @if (checkBox.Episode.Date != null)
                                 {
                                     @checkBox.Episode.Date.Value.ToShortDateString()
                                 }

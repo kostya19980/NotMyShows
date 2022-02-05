@@ -1,13 +1,22 @@
 ﻿@model NotMyShows.ViewModel.UserProfileViewModel
 @{
-    ViewData["Title"] = "UserProfile";
+    ViewData["Title"] = "Profiles";
 }
 <link rel="stylesheet" href="~/css/UserProfile.css" />
 <link rel="stylesheet" href="~/css/SeriesSearch.css" />
+@if (User.Identity.IsAuthenticated)
+{
+    <a asp-controller="Home" asp-action="Logout">
+        Выход
+    </a>
+}
 <div class="profile-container">
     <div class="user-info">
         <div class="user-avatar">
-            <img src="\@Html.Raw(Model.UserProfile.ImageSrc)"/>
+            <label for="upload-image">
+                <img id="avatar-img" src="\@Html.Raw(Model.UserProfile.ImageSrc)" />
+            </label>
+            <input id="upload-image" type="file" />
         </div>
         <div class="user-name">
             @User.GetName()
@@ -66,52 +75,52 @@
     <div class="series-tabs" data="Смотрю">
         @foreach (var item in Model.StatusTabs)
         {
-        <div class="tab-item">
-            <input id="@item.WatchStatus.Id" type="radio" name="radio" value="@item.WatchStatus.StatusName">
-            <label for="@item.WatchStatus.Id">
-                <span class="watch-status-name">@item.WatchStatus.StatusName</span>
-                <span class="watch-status-count">@item.SeriesCount</span>
-            </label>
-        </div>
+            <div class="tab-item">
+                <input id="@item.WatchStatus.Id" type="radio" name="radio" value="@item.WatchStatus.StatusName">
+                <label for="@item.WatchStatus.Id">
+                    <span class="watch-status-name">@item.WatchStatus.StatusName</span>
+                    <span class="watch-status-count">@item.SeriesList.Count()</span>
+                </label>
+            </div>
         }
     </div>
     <div>
         @foreach (var tab in Model.StatusTabs)
         {
-        <div id="@tab.WatchStatus.StatusName" class="profile-series-cards-container" style="display: none">
-            @foreach (var series in tab.SeriesList)
-            {
-                <a class="series-search-card profile-series-card" asp-controller="UserProfile" asp-action="Series" asp-route-SeriesId="@series.Id">
-                    <div class="series-cover-container">
-                        <img src="\@Html.Raw(series.PicturePath)" class="series-cover" />
-                        <div class="series-status" style="background-color:@series.Status.StatusColorName">
-                            @series.Status.Name
-                        </div>
-                    </div>
-                    <div class="series-titles-container">
-                        <label class="series-russian-title">@series.OriginalTitle</label>
-                        <label class="series-origin-title">@series.Title</label>
-                    </div>
-                    <div class="series-raiting-progress-container">
-                        <div class="series-raiting">
-                            <svg>
-                                <use xlink:href="/Icons/outline/24/star.svg#star_icon"></use>
-                            </svg>
-                            <div class="series-raiting-number">
-                                9
+            <div id="@tab.WatchStatus.StatusName" class="profile-series-cards-container" style="display: none">
+                @foreach (var series in tab.SeriesList)
+                {
+                    <a class="series-search-card profile-series-card" asp-controller="UserProfile" asp-action="Series" asp-route-SeriesId="@series.Id">
+                        <div class="series-cover-container">
+                            <img src="\@Html.Raw(series.PicturePath)" class="series-cover" />
+                            <div class="series-status" style="background-color:@series.Status.StatusColorName">
+                                @series.Status.Name
                             </div>
                         </div>
-                        <div class="series-progress">
-                            @{ 
-                                int progress = (int)(100 * ((double)series.WatchedEpisodesCount / series.EpisodesCount));
-                            }
-                            <progress max="100" value="@progress"></progress>
-                            <div class="progress-count">@series.WatchedEpisodesCount/@series.EpisodesCount</div>
+                        <div class="series-titles-container">
+                            <label class="series-russian-title">@series.OriginalTitle</label>
+                            <label class="series-origin-title">@series.Title</label>
                         </div>
-                    </div>
-                </a>
-            }
-        </div>
+                        <div class="series-raiting-progress-container">
+                            <div class="series-raiting">
+                                <svg>
+                                    <use xlink:href="/Icons/outline/24/star.svg#star_icon"></use>
+                                </svg>
+                                <div class="series-raiting-number">
+                                    @series.UserRaiting
+                                </div>
+                            </div>
+                            <div class="series-progress">
+                                @{
+                                    int progress = (int)(100 * ((double)series.WatchedEpisodesCount / series.EpisodesCount));
+                                }
+                                <progress max="100" value="@progress"></progress>
+                                <div class="progress-count">@series.WatchedEpisodesCount/@series.EpisodesCount</div>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
         }
     </div>
 </div>

@@ -32,7 +32,7 @@ namespace NeMyshows.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("UserProfile", "UserProfile");
+                return RedirectToAction("UserProfile", "Profiles");
             }
             return View();
         }
@@ -72,8 +72,8 @@ namespace NeMyshows.Controllers
             //List<Series> series = await db.Series.Include(r=>r.Raiting).Include(s=>s.Status).Include(ch=>ch.Channel).Include(c => c.Country).
             //    Include(sg => sg.SeriesGenres).ThenInclude(g=>g.Genre).
             //    Where(x => x.Id >= 1 && x.Id <= 100).ToListAsync();
-            List<Series> series = await db.Series.Include(s => s.Status).
-                Where(x => x.Id >= 1 && x.Id <= 100).ToListAsync();
+            List<Series> series = await db.Series.Include(s => s.Status)
+                .Where(x => x.Id >= 1 && x.Id <= 100).ToListAsync();
             List<SeriesView> seriesListView = new List<SeriesView>();
             foreach(var item in series)
             {

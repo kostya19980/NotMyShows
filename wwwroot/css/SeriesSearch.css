@@ -129,11 +129,13 @@
 .series-origin-title {
     font: var(--font-14-16-Regular);
     color: var(--color-text-secondary);
+    cursor: pointer;
 }
 
 .series-russian-title {
     font: var(--font-16-Semibold);
     color: var(--color-text-heading);
+    cursor: pointer;
 }
 
 .series-status {
@@ -145,7 +147,7 @@
     margin-left: 16px;
     margin-top: 16px;
     padding: 4px 8px;
-    width: 45px;
+    min-width: 45px;
     height: 20px;
     background: var(--color-accent-purple);
     border-radius: 999px;

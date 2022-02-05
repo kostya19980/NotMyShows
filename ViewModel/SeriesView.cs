@@ -8,9 +8,10 @@ namespace NotMyShows.ViewModel
     public class SeriesView
     {
         public Series Series { get; set; }
+        public int UserRaiting { get; set; }
         public string StatusColorName { get; set; }
         public string CurrentWatchStatus { get; set; }
-        public string[] WatchStatuses = new string[] { "Смотрю", "Запланировано", "Отложено" };
+        public string[] WatchStatuses = new string[] { "Смотрю", "Запланировано", "Отложено", "Просмотрено" };
         public List<EpisodeCheckBox> Episodes { get; set; }
     }
     public class EpisodeCheckBox

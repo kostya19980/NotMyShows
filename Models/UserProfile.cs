@@ -26,8 +26,10 @@ namespace NotMyShows.Models
         public int UserProfileId { get; set; }
         public UserProfile UserProfile { get; set; }
         public int UserRaiting { get; set; }
+        public DateTime RaitingDate { get; set; }
         public int WatchStatusId { get; set; }
         public WatchStatus WatchStatus { get; set; }
+        public DateTime StatusChangedDate { get; set; }
     }
     public class UserEpisodes
     {

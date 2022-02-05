@@ -23,7 +23,7 @@ namespace NotMyShows.Controllers
             db = context;
             _env = env;
         }
-        public async Task<IActionResult> UserProfile()
+        public async Task<IActionResult> Profiles()
         {
             List<WatchStatus> watchStatuses = await db.WatchStatuses.ToListAsync();
             UserProfile profile = await GetUserProfile(true);
@@ -46,7 +46,8 @@ namespace NotMyShows.Controllers
                             StatusColorName = StatusColor.GetColor(item.Series.Status.Name)
                         },
                         PicturePath = item.Series.PicturePath,
-                        WatchedEpisodesCount = profile.UserEpisodes.Where(x => x.Episode.SeriesId == item.Series.Id).Count()
+                        WatchedEpisodesCount = profile.UserEpisodes.Where(x => x.Episode.SeriesId == item.Series.Id).Count(),
+                        UserRaiting = item.UserRaiting
                     };
                     Hours += seriesItem.WatchedEpisodesCount * item.Series.EpisodeTime;
                     TabSeriesList.Add(seriesItem);
@@ -54,7 +55,6 @@ namespace NotMyShows.Controllers
                 WatchStatusTab tab = new WatchStatusTab
                 {
                     WatchStatus = status,
-                    SeriesCount = profile.UserSeries.Where(x => x.WatchStatusId == status.Id).Count(),
                     SeriesList = TabSeriesList
                 };
                 statusTabs.Add(tab);
@@ -62,7 +62,7 @@ namespace NotMyShows.Controllers
             ProfileStats profileStats = new ProfileStats
             {
                 EpisodesCount = profile.UserEpisodes.Count(),
-                SeriesCount = profile.UserSeries.Count(),
+                SeriesCount = statusTabs.FirstOrDefault(x=>x.WatchStatus.StatusName == "Просмотрено").SeriesList.Count(),
                 HoursSpent = Hours,
                 AchievementsCount = 0
             };
@@ -101,6 +101,7 @@ namespace NotMyShows.Controllers
             UserProfile profile = await GetUserProfile(true);
             var userSeries = profile.UserSeries.FirstOrDefault(x => x.SeriesId == SeriesId);
             string CurrentWatchStatus = "";
+            int UserRaiting = 0;
             List<EpisodeCheckBox> episodes = new List<EpisodeCheckBox>();
             if (userSeries != null)
             {
@@ -115,6 +116,7 @@ namespace NotMyShows.Controllers
                     episodes.Add(episodeCheckBox);
                 }
                 CurrentWatchStatus = watchStatus.StatusName;
+                UserRaiting = userSeries.UserRaiting;
             }
             else
             {
@@ -134,7 +136,8 @@ namespace NotMyShows.Controllers
                 StatusColorName = StatusColor.GetColor(series.Status.Name),
                 Series = series,
                 CurrentWatchStatus = CurrentWatchStatus,
-                Episodes = episodes
+                Episodes = episodes,
+                UserRaiting = UserRaiting
             };
             model.Series.Status.Name = StatusColor.GetNewStatusName(series.Status.Name);
             //if (series == null)
@@ -167,14 +170,15 @@ namespace NotMyShows.Controllers
                     userSeries = new UserSeries
                     {
                         SeriesId = SeriesId,
-                        WatchStatus = status
+                        WatchStatus = status,
+                        StatusChangedDate = DateTime.Now
                     };
                     userProfile.UserSeries.Add(userSeries);
                     db.Update(userProfile);
                 }
                 await db.SaveChangesAsync();
             }
-            return Json(userProfile);
+            return Json("Success");
         }
         public async Task SelectDefaultWatchStatus(int SeriesId, UserProfile UserProfile, string StatusName)
         {
@@ -185,7 +189,8 @@ namespace NotMyShows.Controllers
                 userSeries = new UserSeries
                 {
                     SeriesId = SeriesId,
-                    WatchStatus = status
+                    WatchStatus = status,
+                    StatusChangedDate = DateTime.Now
                 };
                 UserProfile.UserSeries.Add(userSeries);
             }
@@ -233,7 +238,7 @@ namespace NotMyShows.Controllers
             db.Update(userProfile);
             await db.SaveChangesAsync();
             await IsSeriesWatchCompleted(userProfile, SeriesId);
-            return Json(userProfile.UserEpisodes);
+            return Json("Success");
         }
         [HttpPost]
         public async Task<IActionResult> CheckEpisodes(int[] CheckedIds, int SeriesId)
@@ -257,8 +262,43 @@ namespace NotMyShows.Controllers
             db.Update(userProfile);
             await db.SaveChangesAsync();
             await IsSeriesWatchCompleted(userProfile, SeriesId);
-            return Json(userProfile.UserEpisodes);
+            return Json("Success");
         }
+        [HttpPost]
+        public async Task<float> SelectSeriesRaiting (int UserRaiting, int SeriesId)
+        {
+            string UserSub = User.GetSub();
+            UserProfile userProfile = await db.UserProfiles.Include(us => us.UserSeries)
+                .ThenInclude(s => s.Series).ThenInclude(r => r.Raiting)
+                .FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            UserSeries userSeries = userProfile.UserSeries.FirstOrDefault(x => x.SeriesId == SeriesId);
+            if(userSeries != null)
+            {
+                int PrevUserRaiting = userSeries.UserRaiting;
+                float PrevSeriesRaiting = userSeries.Series.Raiting.Raiting;
+                int Votes = userSeries.Series.Raiting.Votes;
+                if (PrevUserRaiting == 0)
+                {
+                    userSeries.Series.Raiting.Raiting = (PrevSeriesRaiting * Votes + UserRaiting) / (Votes + 1);
+                    userSeries.Series.Raiting.Votes++;
+                }
+                else
+                {
+                    userSeries.Series.Raiting.Raiting = (PrevSeriesRaiting * Votes - PrevUserRaiting + UserRaiting) / Votes;
+                }
+                userSeries.UserRaiting = UserRaiting;
+                userSeries.RaitingDate = DateTime.Now;
+                db.Update(userSeries);
+                await db.SaveChangesAsync();
+                return userSeries.Series.Raiting.Raiting;
+            }
+            Series series = await db.Series.Include(r => r.Raiting).FirstOrDefaultAsync(x => x.Id == SeriesId);
+            return series.Raiting.Raiting;
+        }
+        //public float CalculateRaiting(float PrevRaiting, int Votes, float UserRaiting)
+        //{
+        //    return (PrevRaiting * Votes + UserRaiting) / (Votes + 1);
+        //}
         public async Task CreateWatchStatuses()
         {
             string[] names = { "Смотрю", "Запланировано", "Отложено", "Брошено", "Просмотрено" };
@@ -278,11 +318,28 @@ namespace NotMyShows.Controllers
             UserProfile userProfile = new UserProfile
             {
                 UserSub = UserSub,
-                ImageSrc = Path.Combine(_env.WebRootPath, "images", "UserAvatars", "DefaultAvatar.png")
+                ImageSrc = Path.Combine("images", "UserAvatars", "DefaultAvatar.png")
             };
             await db.AddAsync(userProfile);
             await db.SaveChangesAsync();
-            return RedirectToAction("UserProfile");
+            return RedirectToAction("Profiles");
+        }
+        public async Task<JsonResult> UploadImage(IFormFile ImageFile)
+        {
+            if (ImageFile != null)
+            {
+                string path = Path.Combine("images", "UserAvatars", ImageFile.FileName);
+                using (var fileStream = new FileStream(Path.Combine(_env.WebRootPath, path), FileMode.Create))
+                {
+                    await ImageFile.CopyToAsync(fileStream);
+                }
+                string UserSub = User.GetSub();
+                UserProfile profile = await db.UserProfiles.FirstOrDefaultAsync(x => x.UserSub == UserSub);
+                profile.ImageSrc = path;
+                db.Update(profile);
+                await db.SaveChangesAsync();
+            }
+            return Json("Success");
         }
     }
 }

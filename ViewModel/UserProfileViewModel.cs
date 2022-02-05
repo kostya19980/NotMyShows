@@ -14,7 +14,6 @@ namespace NotMyShows.ViewModel
     }
     public class WatchStatusTab
     {
-        public int SeriesCount { get; set; }
         public WatchStatus WatchStatus { get; set; }
         public List<ProfileSeriesItem> SeriesList { get; set; }
     }
