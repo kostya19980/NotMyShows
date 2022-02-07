@@ -31,6 +31,7 @@ namespace NotMyShows.Models
         public List<SeriesGenres> SeriesGenres { get; set; }
         public List<Episode> Episodes { get; set; }
         public List<Review> Reviews { get; set; }
+        public List<Comment> Comments { get; set; }
         public List<UserSeries> UserSeries { get; set; }
         public int EpisodeTime { get; set; }
         public string TotalTime { get; set; }

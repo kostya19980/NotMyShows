@@ -10,9 +10,11 @@ namespace NotMyShows.Models
     {
         public int Id { get; set; }
         public string UserSub { get; set; }
+        public string Name { get; set; }
         public string ImageSrc { get; set; }
         public List<UserSeries> UserSeries { get; set; }
         public List<UserEpisodes> UserEpisodes { get; set; }
+        public List<Comment> Comments { get; set; }
         public UserProfile()
         {
             UserSeries = new List<UserSeries>();
@@ -48,5 +50,17 @@ namespace NotMyShows.Models
         {
             UserSeries = new List<UserSeries>();
         }
+    }
+    public class Comment
+    {
+        public int Id { get; set; }
+        public int UserProfileId { get; set; }
+        public UserProfile UserProfile { get; set; }
+        public int SeriesId { get; set; }
+        public Series Series { get; set; }
+        public string Text { get; set; }
+        public int Likes { get; set; }
+        public int Dislikes { get; set; }
+        public DateTime Date { get; set; }
     }
 }

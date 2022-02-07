@@ -29,6 +29,7 @@ namespace NotMyShows.Controllers
             var profile = await db.UserProfiles.Select(p => new 
             {
                 Id = p.Id,
+                Name = p.Name,
                 ImageSrc = p.ImageSrc,
                 UserSeries = p.UserSeries.Select(us => new ProfileSeriesItem
                 {
@@ -53,10 +54,13 @@ namespace NotMyShows.Controllers
             foreach (var status in watchStatuses)
             {
                 List<ProfileSeriesItem> TabSeriesList = new List<ProfileSeriesItem>();
-                var tempSeriesList = seriesGroups.FirstOrDefault(x => x.Key == status.Id);
-                if(tempSeriesList != null)
+                if (seriesGroups.Any())
                 {
-                    TabSeriesList = tempSeriesList.ToList();
+                    var tempSeriesList = seriesGroups.FirstOrDefault(x => x.Key == status.Id);
+                    if (tempSeriesList != null)
+                    {
+                        TabSeriesList = tempSeriesList.ToList();
+                    }
                 }
                 WatchStatusTab tab = new WatchStatusTab
                 {
@@ -75,6 +79,7 @@ namespace NotMyShows.Controllers
             UserProfileViewModel model = new UserProfileViewModel
             {
                 Id = profile.Id,
+                UserName = profile.Name,
                 ImageSrc = profile.ImageSrc,
                 StatusTabs = statusTabs,
                 ProfileStats = profileStats
@@ -336,10 +341,14 @@ namespace NotMyShows.Controllers
         public async Task<IActionResult> CreateUserProfile()
         {
             string UserSub = User.GetSub();
+            string Name = User.GetName();
+            int pos = Name.LastIndexOf("@");
+            Name = User.GetName().Remove(pos, Name.Length - pos);
             UserProfile userProfile = new UserProfile
             {
                 UserSub = UserSub,
-                ImageSrc = Path.Combine("images", "UserAvatars", "DefaultAvatar.png")
+                ImageSrc = Path.Combine("images", "UserAvatars", "DefaultAvatar.png"),
+                Name = Name
             };
             await db.AddAsync(userProfile);
             await db.SaveChangesAsync();

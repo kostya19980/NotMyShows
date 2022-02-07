@@ -389,12 +389,23 @@
     margin-left: 24px;
 }
 .episode-comments-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     width: 74px;
     height: 24px;
     font: var(--font-16-Medium);
     font-weight: normal;
     color: var(--color-grey-60);
     margin-left: auto;
+}
+.comment-icon {
+    width: 24px;
+    height: 24px;
+    stroke: var(--color-grey-60);
+}
+.comments-count {
+    width: 42px;
 }
 .show-season-episodes-button {
     display: flex;

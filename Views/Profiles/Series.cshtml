@@ -206,7 +206,7 @@
                 {
                     if (checkBox.Episode.SeasonNumber == j + 1)
                     {
-                        <div class="episode">
+                        <a class="episode" href="#">
                             <input type="checkbox" class="custom-checkbox" id="@checkBox.Episode.Id" checked="@checkBox.isChecked">
                             <label for="@checkBox.Episode.Id"></label>
                             <div class="episode-info-item" style="width: 88px;">
@@ -222,12 +222,14 @@
                                 @checkBox.Episode.Title
                             </div>
                             <div class="episode-comments-info">
-                                <svg>
-                                    <use xlink:href="/Icons/plus.svg#plus_icon"></use>
+                                <svg class="comment-icon">
+                                    <use xlink:href="/Icons/outline/24/comments.svg#comments_icon"></use>
                                 </svg>
-                                236
+                                <span class="comments-count">
+                                    236
+                                </span>
                             </div>
-                        </div>
+                        </a>
                     }
                 }
             </div>
