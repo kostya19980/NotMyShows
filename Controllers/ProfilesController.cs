@@ -104,6 +104,10 @@ namespace NotMyShows.Controllers
         //    }
         //    return profile;
         //}
+        public async Task<IActionResult> Episode(int EpisodeId)
+        {
+
+        }
         public async Task<IActionResult> Series(int SeriesId)
         {
             Series series = await db.Series.Include(r => r.Raiting).Include(s => s.Status).Include(ch => ch.Channel)

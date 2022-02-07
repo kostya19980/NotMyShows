@@ -206,7 +206,7 @@
                 {
                     if (checkBox.Episode.SeasonNumber == j + 1)
                     {
-                        <a class="episode" href="#">
+                        <a class="episode" asp-controller="Profiles" asp-action="Episode" asp-route-EpisodeId="@checkBox.Episode.Id">
                             <input type="checkbox" class="custom-checkbox" id="@checkBox.Episode.Id" checked="@checkBox.isChecked">
                             <label for="@checkBox.Episode.Id"></label>
                             <div class="episode-info-item" style="width: 88px;">
