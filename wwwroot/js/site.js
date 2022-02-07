@@ -196,7 +196,7 @@
         var seriesId = $(".series-info-container").attr("value");
         $.ajax({
             type: "POST",
-            url: "/UserProfile/CheckEpisodes",
+            url: "/Profiles/CheckEpisodes",
             data: { "CheckedIds": checkedIds, "SeriesId": seriesId},
             success: function (response) {
                 console.log("Отмечен весь сезон");
@@ -220,7 +220,7 @@
             console.log(ImageFile);
             $.ajax({
                 type: "Post",
-                url: "/UserProfile/UploadImage",
+                url: "/Profiles/UploadImage",
                 data: data,
                 contentType: false,
                 processData: false,
@@ -246,7 +246,7 @@
         var SeriesId = $(".series-info-container").attr("value");
         $.ajax({
             type: "POST",
-            url: "/UserProfile/SelectSeriesRaiting",
+            url: "/Profiles/SelectSeriesRaiting",
             data: { "UserRaiting": currentStar, "SeriesId": SeriesId },
             success: function (response) {
                 $(".raiting-number").attr("value", currentStar);
@@ -286,20 +286,12 @@
         }
         $.ajax({
             type: "POST",
-            url: "/UserProfile/SelectWatchStatus",
+            url: "/Profiles/SelectWatchStatus",
             data: { "SeriesId": SeriesId, "StatusName": StatusName },
             success: function (response) {
                 $(".series-raiting").css("display", "flex");
             }
         });
-    });
-    $(".tab-item > input").change(function (e) {
-        var tabsBlock = $(".series-tabs");
-        var prevTab = tabsBlock.attr("data");
-        $("#" + prevTab).hide();
-        var currentTab = $(this).val();
-        tabsBlock.attr("data", currentTab);
-        $("#" + currentTab).show();
     });
     $('.show-season-episodes-button').click(function () {
         var seasonContainer = $("#" + $(this).attr("data"));
@@ -320,7 +312,7 @@
         var seriesId = $(".series-info-container").attr("value");
         $.ajax({
             type: "POST",
-            url: "/UserProfile/CheckEpisodes",
+            url: "/Profiles/CheckEpisodes",
             data: { "CheckedIds": checkedIds, "SeriesId": seriesId},
             success: function (response) {
                 console.log("Отмечен весь сериал");
@@ -338,7 +330,7 @@
         var seriesId = $(".series-info-container").attr("value");
         $.ajax({
             type: "POST",
-            url: "/UserProfile/CheckEpisode",
+            url: "/Profiles/CheckEpisode",
             data: { "EpisodeId": episodeId, "SeriesId": seriesId},
             success: function (response) {
                 console.log("Отмечена серия");
@@ -347,7 +339,6 @@
             }
         });
     })
-    $(".tab-item > label")[0].click();
 
 });
 function SendOtherInfo(data) {

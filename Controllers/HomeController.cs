@@ -32,7 +32,9 @@ namespace NeMyshows.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Profile", "Profiles");
+                string UserSub = User.GetSub();
+                int id = db.UserProfiles.FirstOrDefaultAsync(x => x.UserSub == UserSub).Result.Id;
+                return RedirectToAction("Profile", "Profiles", new { id = id });
             }
             return View();
         }

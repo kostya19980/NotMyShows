@@ -14,7 +14,7 @@
     <div class="user-info">
         <div class="user-avatar">
             <label for="upload-image">
-                <img id="avatar-img" src="\@Html.Raw(Model.UserProfile.ImageSrc)" />
+                <img id="avatar-img" src="\@Html.Raw(Model.ImageSrc)" />
             </label>
             <input id="upload-image" type="file" />
         </div>
@@ -90,7 +90,7 @@
             <div id="@tab.WatchStatus.StatusName" class="profile-series-cards-container" style="display: none">
                 @foreach (var series in tab.SeriesList)
                 {
-                    <a class="series-search-card profile-series-card" asp-controller="UserProfile" asp-action="Series" asp-route-SeriesId="@series.Id">
+                    <a class="series-search-card profile-series-card" asp-controller="Profiles" asp-action="Series" asp-route-SeriesId="@series.Id">
                         <div class="series-cover-container">
                             <img src="\@Html.Raw(series.PicturePath)" class="series-cover" />
                             <div class="series-status" style="background-color:@series.Status.StatusColorName">
@@ -124,3 +124,16 @@
         }
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        $(".tab-item > input").change(function () {
+            var tabsBlock = $(".series-tabs");
+            var prevTab = tabsBlock.attr("data");
+            $("#" + prevTab).hide();
+            var currentTab = $(this).val();
+            tabsBlock.attr("data", currentTab);
+            $("#" + currentTab).show();
+        });
+        $(".tab-item > label")[0].click();
+    });
+</script>

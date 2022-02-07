@@ -41,6 +41,7 @@
     --color-grey-0: #161617;
     --color-grey-25: #222223;
     --color-grey-50: #2D2D2F;
+    --color-grey-60: #9F9EA3;
     --color-grey-100: #444447;
     --color-grey-200: #717175;
     --color-grey-300: #98989D;
@@ -261,7 +262,9 @@
     margin-top: 13px;
 }
 .episodes-container {
-    width: 880px;
+    max-width: 880px;
+    min-width: 500px;
+    width: 100%;
     margin-top: 55px;
 }
 .episodes-container-header {
@@ -315,13 +318,14 @@
 }
 .episodes {
     display: none;
-    align-self: center;
-    width: 864px;
+    width: 100%;
     margin-top: 4px;
+    padding: 0px 8px 0px 8px;
 }
 .episode {
     display: flex;
     flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
     height: 32px;
@@ -380,8 +384,17 @@
 }*/
 .episode-info-item {
     font: var(--font-16-Regular);
+    font-weight: 500;
     color: var(--color-text-heading);
     margin-left: 24px;
+}
+.episode-comments-info {
+    width: 74px;
+    height: 24px;
+    font: var(--font-16-Medium);
+    font-weight: normal;
+    color: var(--color-grey-60);
+    margin-left: auto;
 }
 .show-season-episodes-button {
     display: flex;

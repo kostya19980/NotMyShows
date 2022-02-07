@@ -7,7 +7,8 @@ namespace NotMyShows.ViewModel
 {
     public class UserProfileViewModel
     {
-        public UserProfile UserProfile { get; set; }
+        public int Id { get; set; }
+        public string ImageSrc { get; set; }
         public ProfileStats ProfileStats { get; set; }
 
         public List<WatchStatusTab> StatusTabs{ get; set; }
