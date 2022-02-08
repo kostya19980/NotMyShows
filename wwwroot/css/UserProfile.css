@@ -18,8 +18,8 @@
     position: static;
     width: 96px;
     height: 96px;
-    background: white;
     border-radius: 50%;
+    background: #ffffff;
 }
 .user-avatar > label {
     width: 100%;
@@ -28,19 +28,79 @@
     cursor: pointer;
 }
 .user-avatar > label > img {
-    width: 100%;
     height: 100%;
+    width: 100%;
+    object-fit: cover;
     border-radius: 50%;
 }
 .user-avatar > input {
     display: none;
 }
+.user-info-items {
+    display: flex;
+    flex-direction: column;
+    margin-left: 24px;
+}
+.user-name-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
 .user-name {
+    display: flex;
+    flex-direction: column;
     position: static;
     font: var(--font-L-XXL-Heading-1-48-B);
     font-weight: 500;
     color: var(--color-text-heading);
-    margin-left: 24px;
+}
+.add-friend-button {
+    display: none;
+    align-items: center;
+    align-self: flex-start;
+    background: #5537EE;
+    font: var(--font-13-16-Semibold);
+    color: var(--color-text-heading);
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    margin-top: 8px;
+    padding: 4px 6px 4px 6px;
+}
+.add-friend-button > svg {
+    width: 14px;
+    height: 14px;
+    margin-right: 2px;
+}
+.remove-friend-button {
+    display: none;
+    align-items: center;
+    align-self: flex-start;
+    background: var(--color-grey-100);
+    font: var(--font-13-16-Semibold);
+    color: var(--color-text-heading);
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    margin-top: 8px;
+    padding: 4px 6px 4px 6px;
+}
+.remove-friend-button:hover {
+    background-color: var(--color-status-error);
+}
+.remove-friend-button:hover > svg {
+    display: block;
+}
+.remove-friend-button > svg {
+    display: none;
+    stroke: #ffffff;
+    width: 16px;
+    height: 16px;
+    margin-left: 2px;
+}
+.add-friend-button:focus {
+    outline: none;
 }
 .user-raiting {
     position: static;

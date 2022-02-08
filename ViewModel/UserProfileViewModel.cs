@@ -10,6 +10,7 @@ namespace NotMyShows.ViewModel
         public int Id { get; set; }
         public string UserName { get; set; }
         public string ImageSrc { get; set; }
+        public bool IsFriend { get; set; }
         public ProfileStats ProfileStats { get; set; }
 
         public List<WatchStatusTab> StatusTabs{ get; set; }

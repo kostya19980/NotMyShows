@@ -47,10 +47,10 @@ namespace NotMyShows.Data.Series
                     b.Property<int>("Dislikes")
                         .HasColumnType("int");
 
-                    b.Property<int>("Likes")
+                    b.Property<int>("EpisodeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SeriesId")
+                    b.Property<int>("Likes")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
@@ -61,7 +61,7 @@ namespace NotMyShows.Data.Series
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SeriesId");
+                    b.HasIndex("EpisodeId");
 
                     b.HasIndex("UserProfileId");
 
@@ -118,7 +118,30 @@ namespace NotMyShows.Data.Series
 
                     b.HasIndex("SeriesId");
 
-                    b.ToTable("Episode");
+                    b.ToTable("Episodes");
+                });
+
+            modelBuilder.Entity("NotMyShows.Models.Friend", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FriendProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("Friends");
                 });
 
             modelBuilder.Entity("NotMyShows.Models.Genre", b =>
@@ -371,9 +394,9 @@ namespace NotMyShows.Data.Series
 
             modelBuilder.Entity("NotMyShows.Models.Comment", b =>
                 {
-                    b.HasOne("NotMyShows.Models.Series", "Series")
+                    b.HasOne("NotMyShows.Models.Episode", "Episode")
                         .WithMany("Comments")
-                        .HasForeignKey("SeriesId")
+                        .HasForeignKey("EpisodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -383,7 +406,7 @@ namespace NotMyShows.Data.Series
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Series");
+                    b.Navigation("Episode");
 
                     b.Navigation("UserProfile");
                 });
@@ -397,6 +420,17 @@ namespace NotMyShows.Data.Series
                         .IsRequired();
 
                     b.Navigation("Series");
+                });
+
+            modelBuilder.Entity("NotMyShows.Models.Friend", b =>
+                {
+                    b.HasOne("NotMyShows.Models.UserProfile", "UserProfile")
+                        .WithMany("Friends")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
                 });
 
             modelBuilder.Entity("NotMyShows.Models.Raitings", b =>
@@ -517,6 +551,8 @@ namespace NotMyShows.Data.Series
 
             modelBuilder.Entity("NotMyShows.Models.Episode", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("UserEpisodes");
                 });
 
@@ -527,8 +563,6 @@ namespace NotMyShows.Data.Series
 
             modelBuilder.Entity("NotMyShows.Models.Series", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Episodes");
 
                     b.Navigation("Raiting");
@@ -548,6 +582,8 @@ namespace NotMyShows.Data.Series
             modelBuilder.Entity("NotMyShows.Models.UserProfile", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Friends");
 
                     b.Navigation("UserEpisodes");
 

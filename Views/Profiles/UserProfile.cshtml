@@ -18,11 +18,51 @@
             </label>
             <input id="upload-image" type="file" />
         </div>
-        <div class="user-name">
-            @Model.UserName
-        </div>
-        <div class="user-raiting">
-            +11777
+        <div class="user-info-items">
+            <div class="user-name-container">
+                <div class="user-name">
+                    @Model.UserName
+                </div>
+                <div class="user-raiting">
+                    +11777
+                </div>
+            </div>
+            @{
+                string Name = User.GetName();
+                int pos = Name.LastIndexOf("@");
+                Name = User.GetName().Remove(pos, Name.Length - pos);
+                if (Name != Model.UserName)
+                {
+                    <button class="remove-friend-button" value="@Model.Id">
+                        В друзьях
+                        <svg>
+                            <use xlink:href="/Icons/outline/20/x.svg#x_icon"></use>
+                        </svg>
+                    </button>
+                    <button class="add-friend-button" value="@Model.Id">
+                        <svg>
+                            <use xlink:href="/Icons/plus.svg#plus_icon"></use>
+                        </svg>
+                        В друзья
+                    </button>
+                    if (!Model.IsFriend)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                $(".add-friend-button").css("display", "flex");
+                            });
+                        </script>
+                    }
+                    else
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                $(".remove-friend-button").css("display", "flex");
+                            });
+                        </script>
+                    }
+                }
+            }
         </div>
     </div>
     <div class="separator">

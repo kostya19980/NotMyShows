@@ -1,8 +1,74 @@
-﻿@model NotMyShows.ViewModel.SeriesView
+﻿@model NotMyShows.ViewModel.EpisodeViewModel
 @{
     ViewData["Title"] = "Episode";
 }
 <link rel="stylesheet" href="~/css/Series.css" />
-<div class="series-container">
-
+<div class="episode-container">
+    <div class="episode-info-container">
+        <div class="episode-cover-container">
+            <img src="@Model.Episode.PicturePath" class="episode-cover" />
+        </div>
+        <div class="episode-info" value="@Model.Episode.Id">
+            <div class="episode-title">
+                @Model.Episode.ShortName - @Model.Episode.Title
+            </div>
+            <div class="info-item">
+                <div class="info-label">Дата выхода:</div>
+                @if (Model.Episode.Date != null)
+                {
+                    <div class="info">
+                        @Model.Episode.Date.Value.ToLongDateString()
+                    </div>
+                }
+            </div>
+            <div class="info-item">
+                <div class="info-label">Сезон:</div>
+                <div class="info">
+                    @Model.Episode.SeasonNumber
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Серия:</div>
+                <div class="info">
+                    @Model.Episode.EpisodeNumber
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="comments-container">
+        <div class="container-header">
+            <div class="header-title">
+                Комментарии
+            </div>
+        </div>
+        <div class="comments">
+            @foreach (var comment in Model.Episode.Comments)
+            {
+                <div class="comment">
+                    <div class="comment-user-avatar">
+                        <a asp-controller="Profiles" asp-action="Profile" asp-route-Id="@comment.UserProfile.Id">
+                            <img src="\@Html.Raw(comment.UserProfile.ImageSrc)" />
+                        </a>
+                    </div>
+                    <div class="comment-text-container">
+                        <div class="comment-head">
+                            <a class="comment-user-name" asp-controller="Profiles" asp-action="Profile" asp-route-Id="@comment.UserProfile.Id">
+                                @comment.UserProfile.Name
+                            </a>
+                            <div class="comment-date">
+                                @comment.Date.ToLongDateString(), @comment.Date.ToShortTimeString()
+                            </div>
+                        </div>
+                        <div class="comment-text">
+                            @comment.Text
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <textarea class="comment-text-area" placeholder="Напишите ваш комментарий"></textarea>
+        <button class="send-comment-button">
+            Написать
+        </button>
+    </div>
 </div>

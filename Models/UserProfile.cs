@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,12 +15,23 @@ namespace NotMyShows.Models
         public string ImageSrc { get; set; }
         public List<UserSeries> UserSeries { get; set; }
         public List<UserEpisodes> UserEpisodes { get; set; }
+        public List<Friend> Friends { get; set; }
         public List<Comment> Comments { get; set; }
         public UserProfile()
         {
             UserSeries = new List<UserSeries>();
             UserEpisodes = new List<UserEpisodes>();
         }
+    }
+    public class Friend
+    {
+        public int Id { get; set; }
+        public int UserProfileId { get; set; }
+        public UserProfile UserProfile { get; set; }
+        public int FriendProfileId { get; set; }
+        [NotMapped]
+        public UserProfile FriendProfile { get; set; }
+        public DateTime Date { get; set; }
     }
     public class UserSeries
     {
@@ -56,8 +68,8 @@ namespace NotMyShows.Models
         public int Id { get; set; }
         public int UserProfileId { get; set; }
         public UserProfile UserProfile { get; set; }
-        public int SeriesId { get; set; }
-        public Series Series { get; set; }
+        public int EpisodeId { get; set; }
+        public Episode Episode { get; set; }
         public string Text { get; set; }
         public int Likes { get; set; }
         public int Dislikes { get; set; }

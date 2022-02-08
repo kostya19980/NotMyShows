@@ -47,7 +47,7 @@ namespace NotMyShows.Controllers
                     PicturePath = us.Series.PicturePath,
                     WatchedEpisodesCount = p.UserEpisodes.Where(x => x.Episode.SeriesId == us.Series.Id).Count(),
                     UserRaiting = us.UserRaiting
-                })
+                }),
             }).AsNoTracking().FirstOrDefaultAsync(x => x.Id == Id);
             var seriesGroups = profile.UserSeries.GroupBy(s => s.WatchStatusId);
             List<WatchStatusTab> statusTabs = new List<WatchStatusTab>();
@@ -73,18 +73,35 @@ namespace NotMyShows.Controllers
             {
                 EpisodesCount = profile.UserSeries.Sum(x => x.WatchedEpisodesCount),
                 SeriesCount = statusTabs.FirstOrDefault(x=>x.WatchStatus.StatusName == "Просмотрено").SeriesList.Count(),
-                HoursSpent = profile.UserSeries.Sum(x => x.WatchedEpisodesCount * x.EpisodeTime),
+                HoursSpent = profile.UserSeries.Sum(x => x.WatchedEpisodesCount * x.EpisodeTime)/60,
                 AchievementsCount = 0
             };
+            bool isFriend = false;
+            if (User.Identity.IsAuthenticated)
+            {
+                int UserProfileId = await GetUserProfileId();
+                if(UserProfileId != profile.Id)
+                {
+                    UserProfile userProfile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.Id == UserProfileId);
+                    isFriend = userProfile.Friends.FirstOrDefault(x => x.FriendProfileId == profile.Id) == null ? false : true;
+                }
+            }
             UserProfileViewModel model = new UserProfileViewModel
             {
                 Id = profile.Id,
                 UserName = profile.Name,
                 ImageSrc = profile.ImageSrc,
+                IsFriend = isFriend,
                 StatusTabs = statusTabs,
                 ProfileStats = profileStats
             };
             return View("UserProfile", model);
+        }
+        public async Task<int> GetUserProfileId()
+        {
+            string UserSub = User.GetSub();
+            UserProfile profile = await db.UserProfiles.FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            return profile.Id;
         }
         //public async Task<UserProfile> GetUserProfile(int Id, bool IncludeSeries)
         //{
@@ -106,7 +123,65 @@ namespace NotMyShows.Controllers
         //}
         public async Task<IActionResult> Episode(int EpisodeId)
         {
-
+            Episode episode = await db.Episodes.Include(c => c.Comments).ThenInclude(p => p.UserProfile)
+                .AsNoTracking().FirstOrDefaultAsync(x => x.Id == EpisodeId);
+            EpisodeViewModel model = new EpisodeViewModel
+            {
+                Episode = episode
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddComment(string CommentText, int EpisodeId)
+        {
+            string UserSub = User.GetSub();
+            UserProfile profile = await db.UserProfiles.Include(c => c.Comments).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            Comment comment = new Comment
+            {
+                EpisodeId = EpisodeId,
+                Text = CommentText,
+                Likes = 0,
+                Dislikes = 0,
+                Date = DateTime.Now
+            };
+            profile.Comments.Add(comment);
+            db.Update(profile);
+            await db.SaveChangesAsync();
+            return Json("Success");
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddFriend(int FriendId)
+        {
+            string UserSub = User.GetSub();
+            UserProfile profile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            if(profile.Friends.FirstOrDefault(x => x.FriendProfileId == FriendId) == null)
+            {
+                Friend friend = new Friend
+                {
+                    FriendProfileId = FriendId,
+                    Date = DateTime.Now
+                };
+                profile.Friends.Add(friend);
+                db.Update(profile);
+                await db.SaveChangesAsync();
+                return Json("Success");
+            }
+            return Json("Пользователь уже находится у вас в друзьях!");
+        }
+        [HttpPost]
+        public async Task<IActionResult> RemoveFriend(int FriendId)
+        {
+            string UserSub = User.GetSub();
+            UserProfile profile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            Friend friend = profile.Friends.FirstOrDefault(x => x.FriendProfileId == FriendId);
+            if (friend != null)
+            {
+                profile.Friends.Remove(friend);
+                db.Update(profile);
+                await db.SaveChangesAsync();
+                return Json("Success");
+            }
+            return Json("Пользователя нет в друзьях!");
         }
         public async Task<IActionResult> Series(int SeriesId)
         {
@@ -119,8 +194,8 @@ namespace NotMyShows.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 string UserSub = User.GetSub();
-                int id = db.UserProfiles.FirstOrDefaultAsync(x => x.UserSub == UserSub).Result.Id;
-                UserProfile profile = await db.UserProfiles.Include(us => us.UserSeries).Include(ue => ue.UserEpisodes).FirstOrDefaultAsync(x => x.Id == id);
+                //int id = db.UserProfiles.FirstOrDefaultAsync(x => x.UserSub == UserSub).Result.Id;
+                UserProfile profile = await db.UserProfiles.Include(us => us.UserSeries).Include(ue => ue.UserEpisodes).FirstOrDefaultAsync(x => x.UserSub == UserSub);
                 var userSeries = profile.UserSeries.FirstOrDefault(x => x.SeriesId == SeriesId);
                 if (userSeries != null)
                 {
@@ -356,7 +431,7 @@ namespace NotMyShows.Controllers
             };
             await db.AddAsync(userProfile);
             await db.SaveChangesAsync();
-            return RedirectToAction("Profile");
+            return RedirectToAction("Profile", new { id = userProfile.Id });
         }
         public async Task<JsonResult> UploadImage(IFormFile ImageFile)
         {

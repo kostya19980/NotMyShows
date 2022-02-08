@@ -267,19 +267,6 @@
     width: 100%;
     margin-top: 55px;
 }
-.episodes-container-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-.episodes-container-title {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 32px;
-    line-height: 32px;
-    color: var(--color-text-heading);
-}
 .check-all-episodes-button {
     height: 48px;
     padding: 12px 24px;
@@ -434,4 +421,154 @@
 }
 .check-season-button:focus {
     outline: none;
+}
+
+.episode-container {
+    max-width: 880px;
+}
+.comments-container
+{
+    flex-direction: column;
+    margin-top: 55px;
+}
+.comment-text-area {
+    width: 100%;
+    height: 150px;
+    background-color: var(--color-grey-100);
+    font: var(--font-16-Regular);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-top: 16px;
+}
+.comment-text-area:focus {
+    outline: none;
+}
+textarea::-webkit-input-placeholder {
+    color: var(--color-text-secondary);
+}
+
+textarea:-moz-placeholder { /* Firefox 18- */
+    color: var(--color-text-secondary);
+}
+
+textarea::-moz-placeholder { /* Firefox 19+ */
+    color: var(--color-text-secondary);
+}
+
+textarea:-ms-input-placeholder {
+    color: var(--color-text-secondary);
+}
+
+textarea::placeholder {
+    color: var(--color-text-secondary);
+}
+.send-comment-button {
+    height: 48px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font: var(--font-18-Medium);
+    color: var(--color-text-heading);
+    background: #5537EE;
+    align-self: flex-start;
+    margin-top: 16px;
+}
+.send-comment-button:focus {
+    outline: none;
+}
+.episode-info-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+.episode-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-left: 24px;
+}
+.episode-title {
+    font: var(--font-XXS-XS-Heading-1-36-B);
+    font-size: 24px;
+    color: var(--color-text-heading);
+    width: 100%;
+    margin-bottom: 10px;
+}
+.episode-cover-container {
+    display: flex;
+    flex-direction: row;
+}
+.episode-cover {
+    border-radius: 8px;
+    max-width: 500px;
+    min-width: 250px;
+}
+.container-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.header-title {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 32px;
+    color: var(--color-text-heading);
+}
+.comments {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    width: 100%;
+}
+.comment {
+    display: flex;
+    flex-direction: row;
+    min-height: 82px;
+    background: var(--color-bg-surface);
+    box-shadow: 0px 0px 16px #141414;
+    border-radius: 8px;
+    padding: 16px 24px 16px 24px;
+    margin-top: 4px;
+}
+.comment-user-avatar {
+    height: 82px;
+    width: 82px;
+    background: #FFFFFF;
+    border-radius: 50%;
+}
+.comment-user-avatar > a > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.comment-text-container
+{
+    display: flex;
+    flex-direction: column;
+    margin-left: 14px;
+}
+.comment-text {
+    font: var(--font-14-Regular);
+    color: var(--color-text-heading);
+}
+.comment-user-name {
+    font: var(--font-16-Regular);
+    color: var(--color-text-heading);
+    color: #5537EE;
+}
+.comment-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.comment-date {
+    color: var(--color-text-secondary);
+    font: var(--font-12-12-Medium);
+    margin-left: 8px;
 }

@@ -6,6 +6,7 @@ namespace NotMyShows.Models
     public class SeriesContext : DbContext
     {
         public DbSet<Series> Series { get; set; }
+        public DbSet<Episode> Episodes { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<Genre> Genre { get; set; }
         public DbSet<Country> Country { get; set; }
@@ -15,6 +16,7 @@ namespace NotMyShows.Models
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<WatchStatus> WatchStatuses { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Friend> Friends { get; set; }
 
         public SeriesContext(DbContextOptions<SeriesContext> options)
             : base(options)

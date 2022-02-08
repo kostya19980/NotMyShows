@@ -339,7 +339,47 @@
             }
         });
     })
-
+    $(".send-comment-button").click(function () {
+        var commentText = $(".comment-text-area").val();
+        if (commentText.length < 5) {
+            alert("Слишком короткий комментарий!")
+        }
+        else {
+            var episodeId = $(".episode-info").attr("value");
+            $.ajax({
+                type: "POST",
+                url: "/Profiles/AddComment",
+                data: { "CommentText": commentText, "EpisodeId": episodeId },
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+        }
+    })
+    $(".add-friend-button").click(function () {
+        var friendId = $(this).val();
+        $.ajax({
+            type: "POST",
+            url: "/Profiles/AddFriend",
+            data: { "FriendId": friendId },
+            success: function (response) {
+                $(".add-friend-button").css("display", "none");
+                $(".remove-friend-button").css("display", "flex");
+            }
+        });
+    })
+    $(".remove-friend-button").click(function () {
+        var friendId = $(this).val();
+        $.ajax({
+            type: "POST",
+            url: "/Profiles/removeFriend",
+            data: { "FriendId": friendId },
+            success: function (response) {
+                $(".add-friend-button").css("display", "flex");
+                $(".remove-friend-button").css("display", "none");
+            }
+        });
+    })
 });
 function SendOtherInfo(data) {
     $.ajax({
