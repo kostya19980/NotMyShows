@@ -66,7 +66,9 @@ namespace NotMyShows.Data.Series
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserSub = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserSub = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageSrc = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -131,7 +133,28 @@ namespace NotMyShows.Data.Series
                 });
 
             migrationBuilder.CreateTable(
-                name: "Episode",
+                name: "Friends",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserProfileId = table.Column<int>(type: "int", nullable: false),
+                    FriendProfileId = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friends", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Friends_UserProfiles_UserProfileId",
+                        column: x => x.UserProfileId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Episodes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -146,9 +169,9 @@ namespace NotMyShows.Data.Series
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Episode", x => x.Id);
+                    table.PrimaryKey("PK_Episodes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Episode_Series_SeriesId",
+                        name: "FK_Episodes_Series_SeriesId",
                         column: x => x.SeriesId,
                         principalTable: "Series",
                         principalColumn: "Id",
@@ -162,6 +185,7 @@ namespace NotMyShows.Data.Series
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Raiting = table.Column<float>(type: "real", nullable: false),
+                    Votes = table.Column<int>(type: "int", nullable: false),
                     KinopoiskId = table.Column<int>(type: "int", nullable: true),
                     Kinopoisk = table.Column<float>(type: "real", nullable: false),
                     ImdbId = table.Column<int>(type: "int", nullable: true),
@@ -231,7 +255,9 @@ namespace NotMyShows.Data.Series
                     SeriesId = table.Column<int>(type: "int", nullable: false),
                     UserProfileId = table.Column<int>(type: "int", nullable: false),
                     UserRaiting = table.Column<int>(type: "int", nullable: false),
-                    WatchStatusId = table.Column<int>(type: "int", nullable: false)
+                    RaitingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    WatchStatusId = table.Column<int>(type: "int", nullable: false),
+                    StatusChangedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -257,6 +283,36 @@ namespace NotMyShows.Data.Series
                 });
 
             migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserProfileId = table.Column<int>(type: "int", nullable: false),
+                    EpisodeId = table.Column<int>(type: "int", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Likes = table.Column<int>(type: "int", nullable: false),
+                    Dislikes = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Episodes_EpisodeId",
+                        column: x => x.EpisodeId,
+                        principalTable: "Episodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comments_UserProfiles_UserProfileId",
+                        column: x => x.UserProfileId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserEpisodes",
                 columns: table => new
                 {
@@ -268,9 +324,9 @@ namespace NotMyShows.Data.Series
                 {
                     table.PrimaryKey("PK_UserEpisodes", x => new { x.EpisodeId, x.UserProfileId });
                     table.ForeignKey(
-                        name: "FK_UserEpisodes_Episode_EpisodeId",
+                        name: "FK_UserEpisodes_Episodes_EpisodeId",
                         column: x => x.EpisodeId,
-                        principalTable: "Episode",
+                        principalTable: "Episodes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -282,9 +338,24 @@ namespace NotMyShows.Data.Series
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Episode_SeriesId",
-                table: "Episode",
+                name: "IX_Comments_EpisodeId",
+                table: "Comments",
+                column: "EpisodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_UserProfileId",
+                table: "Comments",
+                column: "UserProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Episodes_SeriesId",
+                table: "Episodes",
                 column: "SeriesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friends_UserProfileId",
+                table: "Friends",
+                column: "UserProfileId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Raitings_SeriesId",
@@ -337,6 +408,12 @@ namespace NotMyShows.Data.Series
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "Friends");
+
+            migrationBuilder.DropTable(
                 name: "Raitings");
 
             migrationBuilder.DropTable(
@@ -355,7 +432,7 @@ namespace NotMyShows.Data.Series
                 name: "Genre");
 
             migrationBuilder.DropTable(
-                name: "Episode");
+                name: "Episodes");
 
             migrationBuilder.DropTable(
                 name: "UserProfiles");

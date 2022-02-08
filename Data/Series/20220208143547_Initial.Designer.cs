@@ -10,8 +10,8 @@ using NotMyShows.Models;
 namespace NotMyShows.Data.Series
 {
     [DbContext(typeof(SeriesContext))]
-    [Migration("20220207145938_CommentsUpdate_1")]
-    partial class CommentsUpdate_1
+    [Migration("20220208143547_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,6 +121,29 @@ namespace NotMyShows.Data.Series
                     b.HasIndex("SeriesId");
 
                     b.ToTable("Episodes");
+                });
+
+            modelBuilder.Entity("NotMyShows.Models.Friend", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FriendProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("Friends");
                 });
 
             modelBuilder.Entity("NotMyShows.Models.Genre", b =>
@@ -401,6 +424,17 @@ namespace NotMyShows.Data.Series
                     b.Navigation("Series");
                 });
 
+            modelBuilder.Entity("NotMyShows.Models.Friend", b =>
+                {
+                    b.HasOne("NotMyShows.Models.UserProfile", "UserProfile")
+                        .WithMany("Friends")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("NotMyShows.Models.Raitings", b =>
                 {
                     b.HasOne("NotMyShows.Models.Series", "Series")
@@ -550,6 +584,8 @@ namespace NotMyShows.Data.Series
             modelBuilder.Entity("NotMyShows.Models.UserProfile", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Friends");
 
                     b.Navigation("UserEpisodes");
 

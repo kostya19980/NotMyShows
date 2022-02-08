@@ -430,6 +430,7 @@ namespace NotMyShows.Controllers
         }
         public async Task<IActionResult> CreateUserProfile()
         {
+            await CreateWatchStatuses();
             string UserSub = User.GetSub();
             string Name = User.GetName();
             int pos = Name.LastIndexOf("@");
