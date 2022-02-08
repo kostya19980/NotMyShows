@@ -1,5 +1,13 @@
-﻿@model NotMyShows.ViewModel.EpisodeViewModel
+﻿@model NotMyShows.ViewModel.FriendsViewModel
 @{
     ViewData["Title"] = "Friends";
 }
 <link rel="stylesheet" href="~/css/UserProfile.css" />
+<div>
+    @foreach (var friend in Model.Friends)
+    {
+        <div>
+            @friend.FriendProfile.Name
+        </div>
+    }
+</div>

@@ -131,6 +131,17 @@ namespace NotMyShows.Controllers
             };
             return View(model);
         }
+        public async Task<IActionResult> Friends()
+        {
+            string UserSub = User.GetSub();
+            UserProfile profile = await db.UserProfiles.Include(f => f.Friends).ThenInclude(p => p.FriendProfile)
+                .FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            FriendsViewModel model = new FriendsViewModel
+            {
+                Friends = profile.Friends
+            };
+            return View(model);
+        }
         [HttpPost]
         public async Task<IActionResult> AddComment(string CommentText, int EpisodeId)
         {
@@ -149,40 +160,40 @@ namespace NotMyShows.Controllers
             await db.SaveChangesAsync();
             return Json("Success");
         }
-        [HttpPost]
-        public async Task<IActionResult> AddFriend(int FriendId)
-        {
-            string UserSub = User.GetSub();
-            UserProfile profile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.UserSub == UserSub);
-            if(profile.Friends.FirstOrDefault(x => x.FriendProfileId == FriendId) == null)
-            {
-                Friend friend = new Friend
-                {
-                    FriendProfileId = FriendId,
-                    Date = DateTime.Now
-                };
-                profile.Friends.Add(friend);
-                db.Update(profile);
-                await db.SaveChangesAsync();
-                return Json("Success");
-            }
-            return Json("Пользователь уже находится у вас в друзьях!");
-        }
-        [HttpPost]
-        public async Task<IActionResult> RemoveFriend(int FriendId)
-        {
-            string UserSub = User.GetSub();
-            UserProfile profile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.UserSub == UserSub);
-            Friend friend = profile.Friends.FirstOrDefault(x => x.FriendProfileId == FriendId);
-            if (friend != null)
-            {
-                profile.Friends.Remove(friend);
-                db.Update(profile);
-                await db.SaveChangesAsync();
-                return Json("Success");
-            }
-            return Json("Пользователя нет в друзьях!");
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> AddFriend(int FriendId)
+        //{
+        //    string UserSub = User.GetSub();
+        //    UserProfile profile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+        //    if(profile.Friends.FirstOrDefault(x => x.FriendProfileId == FriendId) == null)
+        //    {
+        //        Friend friend = new Friend
+        //        {
+        //            FriendProfileId = FriendId,
+        //            Date = DateTime.Now
+        //        };
+        //        profile.Friends.Add(friend);
+        //        db.Update(profile);
+        //        await db.SaveChangesAsync();
+        //        return Json("Success");
+        //    }
+        //    return Json("Пользователь уже находится у вас в друзьях!");
+        //}
+        //[HttpPost]
+        //public async Task<IActionResult> RemoveFriend(int FriendId)
+        //{
+        //    string UserSub = User.GetSub();
+        //    UserProfile profile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+        //    Friend friend = profile.Friends.FirstOrDefault(x => x.FriendProfileId == FriendId);
+        //    if (friend != null)
+        //    {
+        //        profile.Friends.Remove(friend);
+        //        db.Update(profile);
+        //        await db.SaveChangesAsync();
+        //        return Json("Success");
+        //    }
+        //    return Json("Пользователя нет в друзьях!");
+        //}
         public async Task<IActionResult> Series(int SeriesId)
         {
             Series series = await db.Series.Include(r => r.Raiting).Include(s => s.Status).Include(ch => ch.Channel)
