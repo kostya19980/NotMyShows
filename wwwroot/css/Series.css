@@ -559,7 +559,6 @@ textarea::placeholder {
 }
 .comment-user-name {
     font: var(--font-16-Regular);
-    color: var(--color-text-heading);
     color: #5537EE;
 }
 .comment-head {

@@ -256,3 +256,55 @@ progress::-moz-progress-bar {
     color: var(--color-text-secondary);
     margin-left: 12px;
 }
+
+
+.friend-user-avatar {
+    height: 82px;
+    min-width: 82px;
+    max-width: 82px;
+    background: #FFFFFF;
+    border-radius: 50%;
+}
+.friend-user-avatar > a > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.friends-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    max-width: 950px;
+    margin-top: -16px;
+    margin-left: -16px;
+}
+.friend-item {
+    display: flex;
+    flex-direction: row;
+    background: var(--color-bg-surface);
+    box-shadow: 0px 0px 16px #141414;
+    border-radius: 8px;
+    padding: 12px 18px 12px 18px;
+    margin-left: 16px;
+    margin-top: 16px;
+}
+.friend-user-name {
+    font: var(--font-16-Regular);
+    color: #5537EE;
+}
+.friend-user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 16px;
+}
+.write-message-button {
+    height: 32px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font: var(--font-12-12-Medium);
+    color: var(--color-text-heading);
+    background: #5537EE;
+    align-self: flex-start;
+}

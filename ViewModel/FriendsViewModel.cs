@@ -7,6 +7,6 @@ namespace NotMyShows.ViewModel
 {
     public class FriendsViewModel
     {
-        public List<Friend> Friends { get; set; }
+        public List<UserProfile> Friends { get; set; }
     }
 }

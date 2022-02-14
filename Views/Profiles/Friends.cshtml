@@ -3,11 +3,23 @@
     ViewData["Title"] = "Friends";
 }
 <link rel="stylesheet" href="~/css/UserProfile.css" />
-<div>
+<div class="friends-container">
     @foreach (var friend in Model.Friends)
     {
-        <div>
-            @friend.FriendProfile.Name
+    <div class="friend-item">
+        <div class="friend-user-avatar">
+            <a asp-controller="Profiles" asp-action="Profile" asp-route-Id="@friend.Id">
+                <img src="\@Html.Raw(friend.ImageSrc)" />
+            </a>
         </div>
+        <div class="friend-user-info">
+            <a class="friend-user-name" asp-controller="Profiles" asp-action="Profile" asp-route-Id="@friend.Id">
+                @friend.Name
+            </a>
+            <button class="write-message-button">
+                Написать сообщение
+            </button>
+        </div>
+    </div>
     }
 </div>
