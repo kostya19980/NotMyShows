@@ -10,7 +10,7 @@ using NotMyShows.Models;
 namespace NotMyShows.Data.Series
 {
     [DbContext(typeof(SeriesContext))]
-    [Migration("20220208143547_Initial")]
+    [Migration("20220214204753_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

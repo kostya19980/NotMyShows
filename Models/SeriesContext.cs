@@ -21,7 +21,7 @@ namespace NotMyShows.Models
         public SeriesContext(DbContextOptions<SeriesContext> options)
             : base(options)
         {
-            //Database.EnsureCreated();
+            Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

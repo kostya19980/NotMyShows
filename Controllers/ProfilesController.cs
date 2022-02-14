@@ -423,20 +423,24 @@ namespace NotMyShows.Controllers
         //}
         public async Task CreateWatchStatuses()
         {
-            string[] names = { "Смотрю", "Запланировано", "Отложено", "Брошено", "Просмотрено" };
-            foreach (var name in names)
+            var statuses = await db.WatchStatuses.ToListAsync();
+            if(statuses.Count == 0)
             {
-                WatchStatus status = new WatchStatus
+                string[] names = { "Смотрю", "Запланировано", "Отложено", "Брошено", "Просмотрено" };
+                foreach (var name in names)
                 {
-                    StatusName = name
-                };
-                await db.AddAsync(status);
-                await db.SaveChangesAsync();
+                    WatchStatus status = new WatchStatus
+                    {
+                        StatusName = name
+                    };
+                    await db.AddAsync(status);
+                    await db.SaveChangesAsync();
+                }
             }
         }
         public async Task<IActionResult> CreateUserProfile()
         {
-            //await CreateWatchStatuses();
+            await CreateWatchStatuses();
             string UserSub = User.GetSub();
             string Name = User.GetName();
             int pos = Name.LastIndexOf("@");
