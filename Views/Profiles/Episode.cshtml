@@ -53,7 +53,7 @@
                     <div class="comment-text-container">
                         <div class="comment-head">
                             <a class="comment-user-name" asp-controller="Profiles" asp-action="Profile" asp-route-Id="@comment.UserProfile.Id">
-                                @comment.UserProfile.Name
+                                @comment.UserProfile.User.UserName
                             </a>
                             <div class="comment-date">
                                 @comment.Date.ToLongDateString(), @comment.Date.ToShortTimeString()

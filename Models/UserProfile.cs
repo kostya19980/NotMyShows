@@ -10,8 +10,8 @@ namespace NotMyShows.Models
     public class UserProfile
     {
         public int Id { get; set; }
-        public string UserSub { get; set; }
-        public string Name { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
         public string ImageSrc { get; set; }
         public List<UserSeries> UserSeries { get; set; }
         public List<UserEpisodes> UserEpisodes { get; set; }

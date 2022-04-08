@@ -6,9 +6,9 @@
 <link rel="stylesheet" href="~/css/SeriesSearch.css" />
 @if (User.Identity.IsAuthenticated)
 {
-    <a asp-controller="Home" asp-action="Logout">
-        Выход
-    </a>
+    <form method="post" asp-controller="Account" asp-action="Logout">
+        <input type="submit" value="Выход" />
+    </form>
 }
 <div class="profile-container">
     <div class="user-info">
@@ -28,10 +28,7 @@
                 </div>
             </div>
             @{
-                string Name = User.GetName();
-                int pos = Name.LastIndexOf("@");
-                Name = User.GetName().Remove(pos, Name.Length - pos);
-                if (Name != Model.UserName)
+                if (User.Identity.Name != Model.UserName)
                 {
                     <button class="remove-friend-button" value="@Model.Id">
                         В друзьях
@@ -152,16 +149,77 @@
                             </div>
                             <div class="series-progress">
                                 @{
-                                    int progress = (int)(100 * ((double)series.WatchedEpisodesCount / series.EpisodesCount));
+                                    int progress = (int)(100 * ((double)series.UserEpisodes.Count() / series.EpisodesCount));
                                 }
                                 <progress max="100" value="@progress"></progress>
-                                <div class="progress-count">@series.WatchedEpisodesCount/@series.EpisodesCount</div>
+                                <div class="progress-count">@series.UserEpisodes.Count()/@series.EpisodesCount</div>
                             </div>
                         </div>
                     </a>
                 }
             </div>
         }
+    </div>
+    <div class="user-events-container">
+        <label class="profile-block-title">
+            Календарь просмотров
+        </label>
+        <div class="user-events">
+            <div class="calendar-months">
+
+            </div>
+            <div class="calendar-cells-container">
+                <ul class="calendar-days">
+                    <li>Пн</li>
+                    <li>Вт</li>
+                    <li>Ср</li>
+                    <li>Чт</li>
+                    <li>Пт</li>
+                    <li>Сб</li>
+                    <li>Вс</li>
+                </ul>
+                @for (int i = 0; i < 40; i++)
+                {
+                    <ul class="calendar-week">
+                        @for (int j = 0; j < 7; j++)
+                        {
+                            <li class="calendar-cell">
+
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="user-events-container">
+        <label class="profile-block-title">
+            Лента событий
+        </label>
+        <div class="user-events">
+            @{
+                var Groups = Model.UserEvents.GroupBy(x => x.Date.Year & x.Date.Day);
+                foreach (var group in Groups)
+                {
+                    <label>
+                        @group.First().Date.ToShortDateString()
+                    </label>
+                    <div class="day-events">
+                        @foreach (var userEvent in group)
+                        {
+                            <div class="event-block">
+                                <div>
+                                    @Html.Raw(userEvent.GetEventText())
+                                </div>
+                                <div class="event-time">
+                                    @userEvent.Date.ToString("HH:mm")
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
     </div>
 </div>
 <script>

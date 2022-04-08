@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace NotMyShows.Models
 {
 
-    public class SeriesContext : DbContext
+    public class SeriesContext : IdentityDbContext<User>
     {
         public DbSet<Series> Series { get; set; }
         public DbSet<Episode> Episodes { get; set; }

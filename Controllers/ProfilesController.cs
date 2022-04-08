@@ -7,6 +7,7 @@ using NotMyShows.Models;
 using NotMyShows.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,8 +18,8 @@ namespace NotMyShows.Controllers
     public class ProfilesController : Controller
     {
         readonly SeriesContext db;
-        readonly private IHostingEnvironment _env;
-        public ProfilesController(SeriesContext context, IHostingEnvironment env)
+        readonly private IWebHostEnvironment _env;
+        public ProfilesController(SeriesContext context, IWebHostEnvironment env)
         {
             db = context;
             _env = env;
@@ -29,7 +30,7 @@ namespace NotMyShows.Controllers
             var profile = await db.UserProfiles.Select(p => new 
             {
                 Id = p.Id,
-                Name = p.Name,
+                Name = p.User.UserName,
                 ImageSrc = p.ImageSrc,
                 UserSeries = p.UserSeries.Select(us => new ProfileSeriesItem
                 {
@@ -45,9 +46,24 @@ namespace NotMyShows.Controllers
                         StatusColorName = StatusColor.GetColor(us.Series.Status.Name)
                     },
                     PicturePath = us.Series.PicturePath,
-                    WatchedEpisodesCount = p.UserEpisodes.Where(x => x.Episode.SeriesId == us.Series.Id).Count(),
-                    UserRaiting = us.UserRaiting
+                    //WatchedEpisodesCount = p.UserEpisodes.Where(x => x.Episode.SeriesId == us.Series.Id).Count(),
+                    UserRaiting = us.UserRaiting,
+                    StatusChangedDate = us.StatusChangedDate,
+                    RaitingDate = us.RaitingDate,
+                    UserEpisodes = us.UserProfile.UserEpisodes
+                    .Where(x => x.Episode.SeriesId == us.Series.Id)
+                    .Select(x => new UserEpisode
+                    {
+                        EpisodeId = x.EpisodeId,
+                        Title = x.Episode.ShortName,
+                        WatchDate = x.WatchDate
+                    }).ToList()
                 }),
+                Friends = p.Friends.Select(uf => new Friend
+                {
+                    FriendProfileId = uf.FriendProfileId,
+                    Date = uf.Date
+                })
             }).AsNoTracking().FirstOrDefaultAsync(x => x.Id == Id);
             var seriesGroups = profile.UserSeries.GroupBy(s => s.WatchStatusId);
             List<WatchStatusTab> statusTabs = new List<WatchStatusTab>();
@@ -71,9 +87,9 @@ namespace NotMyShows.Controllers
             }
             ProfileStats profileStats = new ProfileStats
             {
-                EpisodesCount = profile.UserSeries.Sum(x => x.WatchedEpisodesCount),
+                EpisodesCount = profile.UserSeries.Sum(x => x.UserEpisodes.Count()),
                 SeriesCount = statusTabs.FirstOrDefault(x=>x.WatchStatus.StatusName == "Просмотрено").SeriesList.Count(),
-                HoursSpent = profile.UserSeries.Sum(x => x.WatchedEpisodesCount * x.EpisodeTime)/60,
+                HoursSpent = profile.UserSeries.Sum(x => x.UserEpisodes.Count() * x.EpisodeTime)/60,
                 AchievementsCount = 0
             };
             bool isFriend = false;
@@ -93,14 +109,76 @@ namespace NotMyShows.Controllers
                 ImageSrc = profile.ImageSrc,
                 IsFriend = isFriend,
                 StatusTabs = statusTabs,
-                ProfileStats = profileStats
+                ProfileStats = profileStats,
+                UserEvents = await CreateUserEventsAsync(profile.UserSeries, profile.Friends, watchStatuses)
             };
             return View("UserProfile", model);
+        }
+        public async Task<List<UserEvent>> CreateUserEventsAsync(IEnumerable<ProfileSeriesItem> SeriesItems, IEnumerable<Friend> Friends, List<WatchStatus> watchStatuses)
+        {
+            /////////User Events
+            List<UserEvent> userEvents = new List<UserEvent>();
+            foreach (var series in SeriesItems)
+            {
+                UserEvent seriesEvent = new SeriesEvent
+                {
+                    SeriesId = series.Id,
+                    SeriesTitle = series.Title,
+                    Date = series.StatusChangedDate,
+                    WatchStatus = watchStatuses.FirstOrDefault(x => x.Id == series.WatchStatusId).StatusName
+                };
+                userEvents.Add(seriesEvent);
+                if (series.UserRaiting > 0)
+                {
+                    UserEvent raitingEvent = new RaitingEvent
+                    {
+                        SeriesId = series.Id,
+                        SeriesTitle = series.Title,
+                        Date = series.RaitingDate,
+                        Raiting = series.UserRaiting
+                    };
+                    userEvents.Add(raitingEvent);
+                }
+                var groupedEpisodes = series.UserEpisodes
+                    .GroupBy(i => i.WatchDate.Year, (k, g) => g
+                    .GroupBy(i => (long)(i.WatchDate - g.Min(e => e.WatchDate)).TotalMinutes / 5))
+                    .SelectMany(g => g);
+                foreach (var group in groupedEpisodes)
+                {
+                    List<UserEpisode> episodesList = group.ToList();
+                    UserEvent episodeEvent = new EpisodeEvent
+                    {
+                        SeriesId = series.Id,
+                        SeriesTitle = series.Title,
+                        EpisodeElements = episodesList,
+                        Date = episodesList.Max(x => x.WatchDate),
+                    };
+                    userEvents.Add(episodeEvent);
+                }
+            }
+            foreach (var friend in Friends)
+            {
+                UserEvent friendEvent = new FriendEvent
+                {
+                    UserName = await GetUserNameById(friend.FriendProfileId),
+                    UserProfileId = friend.FriendProfileId,
+                    Date = friend.Date
+                };
+                userEvents.Add(friendEvent);
+            }
+            userEvents.Sort((x, y) => x.Date.CompareTo(y.Date));
+            userEvents.Reverse();
+            return userEvents;
+        }
+        public async Task<string> GetUserNameById(int Id)
+        {
+            var profile = await db.UserProfiles.Select(p => new { Id = p.Id, Name = p.User.UserName }).AsNoTracking().FirstOrDefaultAsync(x => x.Id == Id);
+            return profile.Name;
         }
         public async Task<int> GetUserProfileId()
         {
             string UserSub = User.GetSub();
-            UserProfile profile = await db.UserProfiles.FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            UserProfile profile = await db.UserProfiles.FirstOrDefaultAsync(x => x.UserId == UserSub);
             return profile.Id;
         }
         //public async Task<UserProfile> GetUserProfile(int Id, bool IncludeSeries)
@@ -123,7 +201,7 @@ namespace NotMyShows.Controllers
         //}
         public async Task<IActionResult> Episode(int EpisodeId)
         {
-            Episode episode = await db.Episodes.Include(c => c.Comments).ThenInclude(p => p.UserProfile)
+            Episode episode = await db.Episodes.Include(c => c.Comments).ThenInclude(p => p.UserProfile).ThenInclude(u => u.User)
                 .AsNoTracking().FirstOrDefaultAsync(x => x.Id == EpisodeId);
             EpisodeViewModel model = new EpisodeViewModel
             {
@@ -135,13 +213,13 @@ namespace NotMyShows.Controllers
         {
             string UserSub = User.GetSub();
             var profile = await db.UserProfiles.Include(f => f.Friends)
-                .AsNoTracking().FirstOrDefaultAsync(x => x.UserSub == UserSub);
+                .AsNoTracking().FirstOrDefaultAsync(x => x.UserId == UserSub);
             List<int> profileIds = new List<int>();
             foreach(var item in profile.Friends)
             {
                 profileIds.Add(item.FriendProfileId);
             }
-            List<UserProfile> friendProfiles = await db.UserProfiles.Where(x => profileIds.Contains(x.Id)).AsNoTracking().ToListAsync();
+            List<UserProfile> friendProfiles = await db.UserProfiles.Include(u => u.User).Where(x => profileIds.Contains(x.Id)).AsNoTracking().ToListAsync();
             FriendsViewModel model = new FriendsViewModel
             {
                 Friends = friendProfiles
@@ -152,7 +230,7 @@ namespace NotMyShows.Controllers
         public async Task<IActionResult> AddComment(string CommentText, int EpisodeId)
         {
             string UserSub = User.GetSub();
-            UserProfile profile = await db.UserProfiles.Include(c => c.Comments).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            UserProfile profile = await db.UserProfiles.Include(c => c.Comments).FirstOrDefaultAsync(x => x.UserId == UserSub);
             Comment comment = new Comment
             {
                 EpisodeId = EpisodeId,
@@ -170,7 +248,7 @@ namespace NotMyShows.Controllers
         public async Task<IActionResult> AddFriend(int FriendId)
         {
             string UserSub = User.GetSub();
-            UserProfile profile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            UserProfile profile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.UserId == UserSub);
             if (profile.Friends.FirstOrDefault(x => x.FriendProfileId == FriendId) == null)
             {
                 Friend friend = new Friend
@@ -189,7 +267,7 @@ namespace NotMyShows.Controllers
         public async Task<IActionResult> RemoveFriend(int FriendId)
         {
             string UserSub = User.GetSub();
-            UserProfile profile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            UserProfile profile = await db.UserProfiles.Include(f => f.Friends).FirstOrDefaultAsync(x => x.UserId == UserSub);
             Friend friend = profile.Friends.FirstOrDefault(x => x.FriendProfileId == FriendId);
             if (friend != null)
             {
@@ -212,7 +290,7 @@ namespace NotMyShows.Controllers
             {
                 string UserSub = User.GetSub();
                 //int id = db.UserProfiles.FirstOrDefaultAsync(x => x.UserSub == UserSub).Result.Id;
-                UserProfile profile = await db.UserProfiles.Include(us => us.UserSeries).Include(ue => ue.UserEpisodes).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+                UserProfile profile = await db.UserProfiles.Include(us => us.UserSeries).Include(ue => ue.UserEpisodes).FirstOrDefaultAsync(x => x.UserId == UserSub);
                 var userSeries = profile.UserSeries.FirstOrDefault(x => x.SeriesId == SeriesId);
                 if (userSeries != null)
                 {
@@ -272,7 +350,7 @@ namespace NotMyShows.Controllers
         public async Task<IActionResult> SelectWatchStatus(int SeriesId, string StatusName)
         {
             string UserSub = User.GetSub();
-            UserProfile userProfile = await db.UserProfiles.Include(us=>us.UserSeries).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+            UserProfile userProfile = await db.UserProfiles.Include(us=>us.UserSeries).FirstOrDefaultAsync(x => x.UserId == UserSub);
             if (userProfile != null)
             {
                 WatchStatus status = await db.WatchStatuses.FirstOrDefaultAsync(x => x.StatusName == StatusName);
@@ -281,10 +359,12 @@ namespace NotMyShows.Controllers
                 {
                     //userProfile.UserSeries.Remove(userSeries);
                     userSeries.WatchStatus = await db.WatchStatuses.FirstOrDefaultAsync(x => x.StatusName == "Брошено");
+                    userSeries.StatusChangedDate = DateTime.Now;
                 }
                 if(userSeries != null && userSeries.WatchStatusId != status.Id)
                 {
                     userSeries.WatchStatus = status;
+                    userSeries.StatusChangedDate = DateTime.Now;
                     db.Update(userSeries);
                 }
                 if(userSeries == null)
@@ -342,7 +422,7 @@ namespace NotMyShows.Controllers
         {
             string UserSub = User.GetSub();
             UserProfile userProfile = await db.UserProfiles.Include(us => us.UserSeries)
-                .Include(ue => ue.UserEpisodes).ThenInclude(e => e.Episode).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+                .Include(ue => ue.UserEpisodes).ThenInclude(e => e.Episode).FirstOrDefaultAsync(x => x.UserId == UserSub);
             UserEpisodes userEpisode = userProfile.UserEpisodes.FirstOrDefault(x => x.EpisodeId == EpisodeId);
             if(userEpisode == null)
             {
@@ -367,7 +447,7 @@ namespace NotMyShows.Controllers
         {
             string UserSub = User.GetSub();
             UserProfile userProfile = await db.UserProfiles.Include(us => us.UserSeries)
-                .Include(ue => ue.UserEpisodes).ThenInclude(e => e.Episode).FirstOrDefaultAsync(x => x.UserSub == UserSub);
+                .Include(ue => ue.UserEpisodes).ThenInclude(e => e.Episode).FirstOrDefaultAsync(x => x.UserId == UserSub);
             foreach (int id in CheckedIds)
             {
                 UserEpisodes userEpisode = userProfile.UserEpisodes.FirstOrDefault(x => x.EpisodeId == id);
@@ -392,7 +472,7 @@ namespace NotMyShows.Controllers
             string UserSub = User.GetSub();
             UserProfile userProfile = await db.UserProfiles.Include(us => us.UserSeries)
                 .ThenInclude(s => s.Series).ThenInclude(r => r.Raiting)
-                .FirstOrDefaultAsync(x => x.UserSub == UserSub);
+                .FirstOrDefaultAsync(x => x.UserId == UserSub);
             UserSeries userSeries = userProfile.UserSeries.FirstOrDefault(x => x.SeriesId == SeriesId);
             if(userSeries != null)
             {
@@ -421,40 +501,6 @@ namespace NotMyShows.Controllers
         //{
         //    return (PrevRaiting * Votes + UserRaiting) / (Votes + 1);
         //}
-        public async Task CreateWatchStatuses()
-        {
-            var statuses = await db.WatchStatuses.ToListAsync();
-            if(statuses.Count == 0)
-            {
-                string[] names = { "Смотрю", "Запланировано", "Отложено", "Брошено", "Просмотрено" };
-                foreach (var name in names)
-                {
-                    WatchStatus status = new WatchStatus
-                    {
-                        StatusName = name
-                    };
-                    await db.AddAsync(status);
-                    await db.SaveChangesAsync();
-                }
-            }
-        }
-        public async Task<IActionResult> CreateUserProfile()
-        {
-            await CreateWatchStatuses();
-            string UserSub = User.GetSub();
-            string Name = User.GetName();
-            int pos = Name.LastIndexOf("@");
-            Name = User.GetName().Remove(pos, Name.Length - pos);
-            UserProfile userProfile = new UserProfile
-            {
-                UserSub = UserSub,
-                ImageSrc = Path.Combine("images", "UserAvatars", "DefaultAvatar.png"),
-                Name = Name
-            };
-            await db.AddAsync(userProfile);
-            await db.SaveChangesAsync();
-            return RedirectToAction("Profile", new { id = userProfile.Id });
-        }
         public async Task<JsonResult> UploadImage(IFormFile ImageFile)
         {
             if (ImageFile != null)
@@ -465,7 +511,7 @@ namespace NotMyShows.Controllers
                     await ImageFile.CopyToAsync(fileStream);
                 }
                 string UserSub = User.GetSub();
-                UserProfile profile = await db.UserProfiles.FirstOrDefaultAsync(x => x.UserSub == UserSub);
+                UserProfile profile = await db.UserProfiles.FirstOrDefaultAsync(x => x.UserId == UserSub);
                 profile.ImageSrc = path;
                 db.Update(profile);
                 await db.SaveChangesAsync();

@@ -1,27 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace NotMyShows.ViewModel
 {
     public class LoginModel
     {
-        [Required(ErrorMessage = "Номер телефона не указан!")]
-        [RegularExpression(@"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$", ErrorMessage = "Некорректный номер телефона!")]
-        public string Login { get; set; }
-        [Required(ErrorMessage = "Пароль не указан!")]
+        [Required(ErrorMessage = "Вы не указали Email!")]
+        //[DataType(DataType.EmailAddress, ErrorMessage = "Введен некорректный адрес электронной почты!")]
+        //[EmailAddress(ErrorMessage = "Некорректный электронный адрес")]
+        [RegularExpression(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}", ErrorMessage = "Некорректный адрес электронной почты!")]
+        public string Email { get; set; }
+        [Required(ErrorMessage = "Вы не указали пароль!")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-        public bool RememberMe { get; set; }
+        public string? ReturnURL { get; set; }
     }
     public class RegisterModel
     {
-        [Required(ErrorMessage = "Номер телефона не указан!")]
-        [RegularExpression(@"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$", ErrorMessage = "Некорректный номер телефона!")]
-        [Remote(action: "CheckPhone", controller: "Account", ErrorMessage = "Номер телефона уже используется!")]
-        public string Login { get; set; }
         [Required(ErrorMessage = "Вы не указали Email!")]
-        [EmailAddress(ErrorMessage = "Некорректный адрес!")]
-        [Remote(action: "CheckEmail", controller: "Account", ErrorMessage = "Электронный адрес уже используется!")]
+        [RegularExpression(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}", ErrorMessage = "Некорректный адрес электронной почты!")]
+        //[Remote(action: "CheckEmail", controller: "Account", ErrorMessage = "Электронный адрес уже используется!")]
         public string Email { get; set; }
         [Required(ErrorMessage = "Вы не указали пароль!")]
         [DataType(DataType.Password)]
@@ -30,5 +27,6 @@ namespace NotMyShows.ViewModel
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Пароль введен неверно!")]
         public string ConfirmPassword { get; set; }
+        public string ReturnURL { get; set; }
     }
 }

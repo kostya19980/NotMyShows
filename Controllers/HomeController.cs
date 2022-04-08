@@ -5,10 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -22,8 +20,8 @@ namespace NeMyshows.Controllers
     public class HomeController : Controller
     {
         readonly SeriesContext db;
-        readonly private IHostingEnvironment _env;
-        public HomeController(SeriesContext context, IHostingEnvironment env)
+        readonly private IWebHostEnvironment _env;
+        public HomeController(SeriesContext context, IWebHostEnvironment env)
         {
             db = context;
             _env = env;
@@ -33,7 +31,7 @@ namespace NeMyshows.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 string UserSub = User.GetSub();
-                UserProfile profile = await db.UserProfiles.FirstOrDefaultAsync(x => x.UserSub == UserSub);
+                UserProfile profile = await db.UserProfiles.FirstOrDefaultAsync(x => x.UserId == UserSub);
                 return RedirectToAction("Profile", "Profiles", new { id = profile.Id });
             }
             return View();
@@ -44,17 +42,10 @@ namespace NeMyshows.Controllers
             return View();
         }
         [HttpGet]
-        public async Task<IActionResult> GetUserAsync()
+        public IActionResult GetUser()
         {
             var identity = (ClaimsIdentity)User.Identity;
             return Json(User.GetName());
-        }
-        public IActionResult Login()
-        {
-            return Challenge(new AuthenticationProperties
-            {
-                RedirectUri = Request.Headers["Referer"].ToString()
-            }, OpenIdConnectDefaults.AuthenticationScheme);
         }
         public IActionResult Register()
         {
@@ -64,10 +55,10 @@ namespace NeMyshows.Controllers
             //    RedirectUri = Request.Headers["Referer"].ToString()
             //}, OpenIdConnectDefaults.AuthenticationScheme);
         }
-        public ActionResult Logout()
-        {
-            return SignOut(CookieAuthenticationDefaults.AuthenticationScheme,OpenIdConnectDefaults.AuthenticationScheme);
-        }
+        //public ActionResult Logout()
+        //{
+        //    return SignOut(CookieAuthenticationDefaults.AuthenticationScheme,OpenIdConnectDefaults.AuthenticationScheme);
+        //}
         [HttpGet]
         public async Task<IActionResult> SeriesSearch()
         {

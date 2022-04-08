@@ -14,7 +14,7 @@
         </div>
         <div class="friend-user-info">
             <a class="friend-user-name" asp-controller="Profiles" asp-action="Profile" asp-route-Id="@friend.Id">
-                @friend.Name
+                @friend.User.UserName
             </a>
             <button class="write-message-button">
                 Написать сообщение
