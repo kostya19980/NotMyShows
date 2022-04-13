@@ -12,7 +12,7 @@ namespace NotMyShows.ViewModel
         [Required(ErrorMessage = "Вы не указали пароль!")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-        public string? ReturnURL { get; set; }
+        public string ReturnURL { get; set; }
     }
     public class RegisterModel
     {

@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NotMyShows.Models;
 
-namespace NotMyShows.Models
+namespace NotMyShows.Data
 {
 
     public class SeriesContext : IdentityDbContext<User>

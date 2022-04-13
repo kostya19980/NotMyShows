@@ -6,20 +6,19 @@ using NotMyShows.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Linq;
+using NotMyShows.Data;
+using NotMyShows.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace NotMyShows.Controllers
 {
     public class AccountController : Controller
     {
-        readonly SeriesContext db;
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private IUserService _userService;
 
-        public AccountController(SeriesContext context, UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(IUserService userService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            db = context;
+            _userService = userService;
         }
         public IActionResult Login(string returnURL = null)
         {
@@ -36,36 +35,26 @@ namespace NotMyShows.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await _userManager.FindByEmailAsync(model.Email);
-                if (user == null)
+                var result = await _userService.LoginUserAsync(model, false);
+                if (result == null)
                 {
-                    ModelState.AddModelError("ModelOnly", "Введённая вами комбинация логина и пароля не найдена");
-                    return View(model);
-                    //return Json(new { error = "Неверный логин и(или) пароль!" });
+                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
-                else
+                if (result.IsSuccess)
                 {
-                    var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-                    if (signInResult.Succeeded)
+                    // проверяем, принадлежит ли URL приложению
+                    if (!string.IsNullOrEmpty(model.ReturnURL) && Url.IsLocalUrl(model.ReturnURL))
                     {
-                        // проверяем, принадлежит ли URL приложению
-                        if (!string.IsNullOrEmpty(model.ReturnURL) && Url.IsLocalUrl(model.ReturnURL))
-                        {
-                            return Redirect(model.ReturnURL);
-                        }
-                        else
-                        {
-                            UserProfile userProfile = await db.UserProfiles.AsNoTracking().FirstOrDefaultAsync(x => x.UserId == user.Id);
-                            return RedirectToAction("Profile", "Profiles", new { id = userProfile.Id });
-                        }
+                        return Redirect(model.ReturnURL);
                     }
                     else
                     {
-                        ModelState.AddModelError("ModelOnly", "Введённая вами комбинация логина и пароля не верна");
+                        int userProfileId = await _userService.GetUserProfileIdAsync(result.UserId);
+                        return RedirectToAction("Profile", "Profiles", new { id = userProfileId });
                     }
                 }
+                ModelState.AddModelError("ModelOnly", result.Message);
             }
-            ModelState.AddModelError("ModelOnly", "Неизвестная ошибка!");
             return View(model);
         }
         [HttpGet]
@@ -82,71 +71,53 @@ namespace NotMyShows.Controllers
         {
             if (ModelState.IsValid)
             {
-                string Name = CreateUserName(model.Email);
-                User user = new User 
-                { 
-                    Email = model.Email, 
-                    UserName = Name,
-                    UserProfile = await CreateUserProfile()
-                };
-                // добавляем пользователя
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                var result = await _userService.RegisterUserAsync(model, false);
+                if (result == null)
                 {
-                    // установка куки
-                    await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Profile", "Profiles", new { id = user.UserProfile.Id });
+                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
-                else
+                if (result.IsSuccess)
                 {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("ModelOnly", error.Description);
-                    }
+                    return RedirectToAction("Profile", "Profiles", new { id = result.UserProfileId });
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("ModelOnly", error);
                 }
             }
-            ModelState.AddModelError("ModelOnly", "Неизвестная ошибка!");
             return View(model);
-        }
-        public async Task<UserProfile> CreateUserProfile()
-        {
-            await CreateWatchStatuses();
-            UserProfile userProfile = new UserProfile
-            {
-                ImageSrc = Path.Combine("images", "UserAvatars", "DefaultAvatar.png")
-            };
-            return userProfile;
-        }
-        public string CreateUserName(string Email)
-        {
-            string Name = Email;
-            int pos = Name.LastIndexOf("@");
-            Name = Name.Remove(pos, Name.Length - pos);
-            return Name;
-        }
-        public async Task CreateWatchStatuses()
-        {
-            var statuses = await db.WatchStatuses.ToListAsync();
-            if (statuses.Count == 0)
-            {
-                string[] names = { "Смотрю", "Запланировано", "Отложено", "Брошено", "Просмотрено" };
-                foreach (var name in names)
-                {
-                    WatchStatus status = new WatchStatus
-                    {
-                        StatusName = name
-                    };
-                    await db.AddAsync(status);
-                    await db.SaveChangesAsync();
-                }
-            }
+            //if (ModelState.IsValid)
+            //{
+            //    string Name = CreateUserName(model.Email);
+            //    User user = new User 
+            //    { 
+            //        Email = model.Email, 
+            //        UserName = Name,
+            //        UserProfile = await CreateUserProfile()
+            //    };
+            //    // добавляем пользователя
+            //    var result = await _userManager.CreateAsync(user, model.Password);
+            //    if (result.Succeeded)
+            //    {
+            //        // установка куки
+            //        await _signInManager.SignInAsync(user, false);
+            //        return RedirectToAction("Profile", "Profiles", new { id = user.UserProfile.Id });
+            //    }
+            //    else
+            //    {
+            //        foreach (var error in result.Errors)
+            //        {
+            //            ModelState.AddModelError("ModelOnly", error.Description);
+            //        }
+            //    }
+            //}
+            //return View(model);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            // удаляем аутентификационные куки
-            await _signInManager.SignOutAsync();
+            await _userService.LogoutAsync();
             return RedirectToAction("Index", "Home");
         }
         //public async Task<IActionResult> LogoutAsync(string logoutId)

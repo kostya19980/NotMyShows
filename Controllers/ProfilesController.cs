@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NotMyShows.Data;
 using NotMyShows.Models;
 using NotMyShows.ViewModel;
 using System;
@@ -24,8 +25,15 @@ namespace NotMyShows.Controllers
             db = context;
             _env = env;
         }
-        public async Task<IActionResult> Profile(int Id)
+        public async Task<IActionResult> Profile(int? Id)
         {
+            if (Id == null)
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    Id = await GetUserProfileId();
+                }
+            }
             List<WatchStatus> watchStatuses = await db.WatchStatuses.AsNoTracking().ToListAsync();
             var profile = await db.UserProfiles.Select(p => new 
             {
