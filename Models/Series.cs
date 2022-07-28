@@ -8,6 +8,7 @@ namespace NotMyShows.Models
         public int MyShowsId { get; set; }
         public int EpisodeTime { get; set; }
         public string TotalTime { get; set; }
+        public string Description { get; set; }
         public Channel Channel { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -32,6 +33,7 @@ namespace NotMyShows.Models
         public List<Episode> Episodes { get; set; }
         public List<Review> Reviews { get; set; }
         public List<UserSeries> UserSeries { get; set; }
+        public List<UserRecommendation> UserRecommendations { get; set; }
         public int EpisodeTime { get; set; }
         public string TotalTime { get; set; }
         public int? ChannelId { get; set; }
@@ -46,6 +48,7 @@ namespace NotMyShows.Models
         {
             SeriesGenres = new List<SeriesGenres>();
             UserSeries = new List<UserSeries>();
+            UserRecommendations = new List<UserRecommendation>();
         }
     }
     public class Episode
@@ -66,7 +69,6 @@ namespace NotMyShows.Models
         {
             UserEpisodes = new List<UserEpisodes>();
         }
-
     }
     public class Status
     {

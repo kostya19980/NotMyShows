@@ -49,8 +49,7 @@ namespace NotMyShows.Controllers
                     }
                     else
                     {
-                        int userProfileId = await _userService.GetUserProfileIdAsync(result.UserId);
-                        return RedirectToAction("Profile", "Profiles", new { id = userProfileId });
+                        return RedirectToAction("Profile", "Profiles", new { id = result.UserProfileId });
                     }
                 }
                 ModelState.AddModelError("ModelOnly", result.Message);

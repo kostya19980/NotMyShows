@@ -15,13 +15,24 @@ namespace NotMyShows.Models
         public string ImageSrc { get; set; }
         public List<UserSeries> UserSeries { get; set; }
         public List<UserEpisodes> UserEpisodes { get; set; }
+        public List<UserRecommendation> UserRecommendations { get; set; }
         public List<Friend> Friends { get; set; }
         public List<Comment> Comments { get; set; }
         public UserProfile()
         {
             UserSeries = new List<UserSeries>();
             UserEpisodes = new List<UserEpisodes>();
+            UserRecommendations = new List<UserRecommendation>();
         }
+    }
+    public class UserRecommendation
+    {
+        public int SeriesId { get; set; }
+        public Series Series { get; set; }
+        public int UserProfileId { get; set; }
+        public UserProfile UserProfile { get; set; }
+        public float PotentialRating { get; set; }
+        public DateTime Date { get; set; }
     }
     public class Friend
     {

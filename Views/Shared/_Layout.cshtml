@@ -19,7 +19,7 @@
                 <div class="search-input-container">
                     <input class="search-input" placeholder="Поиск по сериалам" />
                     <button class="search-button">
-                        <svg>
+                        <svg height="20" width="20">
                             <use xlink:href="/Icons/outline/20/search.svg#search_icon"></use>
                         </svg>
                     </button>
@@ -68,7 +68,7 @@
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a asp-controller="Home" asp-action="SeriesSearch">
+                        <a asp-controller="Home" asp-action="SeriesCatalog">
                             <svg>
                                 <use xlink:href="/Icons/outline/24/shows.svg#shows_icon"></use>
                             </svg>
@@ -76,7 +76,7 @@
                         </a>
                     </li>
                     <li class="menu-item">
-                        <a href="#">
+                        <a asp-controller="Home" asp-action="GetRecommendations">
                             <svg>
                                 <use xlink:href="/Icons/outline/24/recommendations.svg#recommendations_icon"></use>
                             </svg>

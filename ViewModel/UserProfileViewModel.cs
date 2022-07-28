@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc;
 using NotMyShows.Models;
+using NotMyShows.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace NotMyShows.ViewModel
 {
@@ -12,21 +11,18 @@ namespace NotMyShows.ViewModel
         public int Id { get; set; }
         public string UserName { get; set; }
         public string ImageSrc { get; set; }
+        public bool IsProfileOwner { get; set; }
         public bool IsFriend { get; set; }
         public ProfileStats ProfileStats { get; set; }
 
         public List<WatchStatusTab> StatusTabs{ get; set; }
-        public List<UserEvent> UserEvents { get; set; }
+        public IEnumerable<EventGroup> GroupedUserEvents { get; set; }
     }
-    //public class YearEvents
-    //{
-    //    public int Year { get; set; }
-    //    public List<DayEvents> DayEvents { get; set; }
-    //}
-    //public class DayEvents
-    //{
-
-    //}
+    public class EventGroup
+    {
+        public DateTime Date { get; set; }
+        public IEnumerable<UserEvent> UserEvents { get; set; }
+    }
     public abstract class UserEvent
     {
         public DateTime Date { get; set; }
@@ -57,7 +53,7 @@ namespace NotMyShows.ViewModel
     }
     public class EpisodeEvent : SeriesEvent
     {
-        public List<UserEpisode> EpisodeElements { get; set; }
+        public List<UserEpisodeData> EpisodeElements { get; set; }
 
         public override HtmlString GetSeriesEventText(string SeriesLink)
         {
@@ -115,6 +111,7 @@ namespace NotMyShows.ViewModel
         public int EpisodesCount { get; set; }
         public int SeriesCount { get; set; }
         public int HoursSpent { get; set; }
+        public int DaysSpent { get; set; }
         public int AchievementsCount { get; set; }
     }
 }

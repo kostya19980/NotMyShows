@@ -14,6 +14,8 @@ using System.Text;
 using NotMyShows.Data;
 using NotMyShows.Services;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Serialization;
+using System;
 
 namespace NotMyShows
 {
@@ -55,6 +57,8 @@ namespace NotMyShows
                   };
               });
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserProfileService, UserProfileService>();
+            services.AddScoped<ISeriesService, SeriesService>();
             //const string oidc = OpenIdConnectDefaults.AuthenticationScheme;
             //services.AddAuthentication(config =>
             //{
@@ -79,9 +83,12 @@ namespace NotMyShows
             //services.AddAuthorization();
             //services.AddSession();
             //services.AddHttpClient();
-            //services.AddHttpContextAccessor();
+            services.AddHttpContextAccessor();
             services.AddMvc().AddNewtonsoftJson(option =>
             {
+                //option.SerializerSettings.Formatting = Formatting.Indented;
+                //option.SerializerSettings.TypeNameHandling = TypeNameHandling.Auto;
+                //option.SerializerSettings.SerializationBinder = new MySerializationBinder();
                 option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
@@ -111,4 +118,16 @@ namespace NotMyShows
             });
         }
     }
+    //public class MySerializationBinder : DefaultSerializationBinder
+    //{
+    //    const string MyNamespace = "o1shows"; //'foo' is our company name, all our namespaces start with foo
+
+    //    public override Type BindToType(string assemblyName, string typeName)
+    //    {
+    //        if (!typeName.StartsWith(MyNamespace, StringComparison.OrdinalIgnoreCase))
+    //            throw new JsonSerializationException($"Request type {typeName} not supported, please use an IFoo");
+    //        var type = base.BindToType(assemblyName, typeName);
+    //        return type;
+    //    }
+    //}
 }

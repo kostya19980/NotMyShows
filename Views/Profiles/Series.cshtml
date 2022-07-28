@@ -1,4 +1,4 @@
-﻿@model NotMyShows.ViewModel.SeriesView
+﻿@model NotMyShows.ViewModel.SeriesViewModel
 @{
     ViewData["Title"] = "Series";
 }
@@ -11,7 +11,7 @@
         <div class="series-titles-container">
             <div class="russian-title-container">
                 <label class="russian-title">@Model.Series.Title</label>
-                <div class="status" style="background-color:@Model.StatusColorName">
+                <div class="status" style="background-color:@Model.StatusColor">
                     @Model.Series.Status.Name
                 </div>
             </div>
@@ -38,52 +38,36 @@
         </div>
         <div class="watch-status-container">
             @{
-                int id = 1;
-                foreach (var item in Model.WatchStatuses)
+                for (int i = 0; i < 3; i++)
                 {
-                    if (item == "Просмотрено")
-                    {
-                        <div class="watch-status-radio-button" style="display:none">
-                            <input asp-for="CurrentWatchStatus" id="WatchStatus @id" type="radio" name="status-radio" value="@item">
-                            <label class="watch-status-input" for="WatchStatus @id">@item</label>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="watch-status-radio-button">
-                            <input asp-for="CurrentWatchStatus" id="WatchStatus @id" type="radio" name="status-radio" value="@item">
-                            <label class="watch-status-input" for="WatchStatus @id">@item</label>
-                        </div>
-                    }
-                    id++;
+                    <div class="watch-status-radio-button">
+                        <input asp-for="CurrentWatchStatus" id="WatchStatus @(i+1)" type="radio" name="status-radio" value="@Model.WatchStatuses[i]">
+                        <label class="watch-status-input" for="WatchStatus @(i+1)">@Model.WatchStatuses[i]</label>
+                    </div>
+                    @*if (item == "Просмотрено")
+                {
+                    <div class="watch-status-radio-button" style="display:none">
+                        <input asp-for="CurrentWatchStatus" id="WatchStatus @id" type="radio" name="status-radio" value="@item">
+                        <label class="watch-status-input" for="WatchStatus @id">@item</label>
+                    </div>
+                }
+                else
+                {
+                    <div class="watch-status-radio-button">
+                        <input asp-for="CurrentWatchStatus" id="WatchStatus @id" type="radio" name="status-radio" value="@item">
+                        <label class="watch-status-input" for="WatchStatus @id">@item</label>
+                    </div>
+                }*@
                 }
             }
-            @*<button class="watch-status-button" data="Смотрю">
-            Смотрю
-        </button>
-        <button class="watch-status-button" data="Запланировано">
-            Запланировано
-        </button>
-        <button class="watch-status-button" data="Отложено">
-            Отложено
-        </button>*@
         </div>
         <div class="series-info">
             <div class="info-item">
                 <div class="info-label">Даты выхода:</div>
                 <div class="info">
-                    @if (Model.Series.EndDate != null)
-                    {
-                        <p>
-                            &nbsp;@Model.Series.StartDate.ToLongDateString() - @Model.Series.EndDate.Value.ToLongDateString()
-                        </p>
-                    }
-                    else
-                    {
-                        <p>
-                            &nbsp;@Model.Series.StartDate.ToLongDateString() –
-                        </p>
-                    }
+                    <p>
+                        &nbsp;@Model.ReleaseDates
+                    </p>
                 </div>
             </div>
             <div class="info-item">
@@ -137,7 +121,7 @@
             <div class="info-item">
                 <div class="info-label">Серий в сезоне:</div>
                 <div class="info">
-                    @Model.Series.Episodes.Where(x => x.SeasonNumber == 1 && x.EpisodeNumber != 0).Count() (~@Model.Series.EpisodeTime мин)
+                    @Model.SeasonSize (~@Model.Series.EpisodeTime мин)
                 </div>
             </div>
             <div class="info-item">
@@ -173,7 +157,7 @@
         Описание сериала
     </label>
     <span>
-        Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание Описание
+        @Html.Raw(Model.Series.Description)
     </span>
 </div>
 <div class="episodes-container">
@@ -185,52 +169,49 @@
             Отметить все серии
         </button>
     </div>
-    @for (int j = 0; j < Model.Series.SeasonCount; j++)
+    @foreach (var season in Model.Seasons)
     {
-        <div id="season_@(j+1)" class="season-container">
+        <div id="season_@season.SeasonNumber" class="season-container">
             <div class="season">
                 <div class="season-number">
-                    Сезон @(j+1)
+                    Сезон @season.SeasonNumber
                 </div>
-                <button class="check-season-button" data="season_@(j+1)">
+                <button class="check-season-button" data="season_@season.SeasonNumber">
                     Отметить весь сезон
                 </button>
-                <button class="show-season-episodes-button" data="season_@(j+1)">
+                <button class="show-season-episodes-button" data="season_@season.SeasonNumber">
                     <svg>
                         <use xlink:href="/Icons/plus.svg#plus_icon"></use>
                     </svg>
                 </button>
             </div>
             <div class="episodes">
-                @foreach (var checkBox in Model.Episodes)
+                @foreach (var checkBox in season.Episodes)
                 {
-                    if (checkBox.Episode.SeasonNumber == j + 1)
-                    {
-                        <a class="episode" asp-controller="Profiles" asp-action="Episode" asp-route-EpisodeId="@checkBox.Episode.Id">
-                            <input type="checkbox" class="custom-checkbox" id="@checkBox.Episode.Id" checked="@checkBox.isChecked">
-                            <label for="@checkBox.Episode.Id"></label>
-                            <div class="episode-info-item" style="width: 88px;">
-                                @if (checkBox.Episode.Date != null)
-                                {
-                                    @checkBox.Episode.Date.Value.ToShortDateString()
-                                }
-                            </div>
-                            <div class="episode-info-item" style="width: 88px;">
-                                @String.Format("{0:00}", checkBox.Episode.EpisodeNumber)
-                            </div>
-                            <div class="episode-info-item">
-                                @checkBox.Episode.Title
-                            </div>
-                            <div class="episode-comments-info">
-                                <svg class="comment-icon">
-                                    <use xlink:href="/Icons/outline/24/comments.svg#comments_icon"></use>
-                                </svg>
-                                <span class="comments-count">
-                                    236
-                                </span>
-                            </div>
-                        </a>
-                    }
+                    <a class="episode" asp-controller="Profiles" asp-action="Episode" asp-route-EpisodeId="@checkBox.Episode.Id">
+                        <input type="checkbox" class="custom-checkbox" id="@checkBox.Episode.Id" checked="@checkBox.IsChecked">
+                        <label for="@checkBox.Episode.Id"></label>
+                        <div class="episode-info-item" style="width: 88px;">
+                            @if (checkBox.Episode.Date != null)
+                            {
+                                @checkBox.Episode.Date.Value.ToShortDateString()
+                            }
+                        </div>
+                        <div class="episode-info-item" style="width: 88px;">
+                            @String.Format("{0:00}", checkBox.Episode.EpisodeNumber)
+                        </div>
+                        <div class="episode-info-item">
+                            @checkBox.Episode.Title
+                        </div>
+                        <div class="episode-comments-info">
+                            <svg class="comment-icon">
+                                <use xlink:href="/Icons/outline/24/comments.svg#comments_icon"></use>
+                            </svg>
+                            <span class="comments-count">
+                                236
+                            </span>
+                        </div>
+                    </a>
                 }
             </div>
         </div>

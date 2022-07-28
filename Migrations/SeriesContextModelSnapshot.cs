@@ -545,6 +545,27 @@ namespace NotMyShows.Migrations
                     b.ToTable("UserProfiles");
                 });
 
+            modelBuilder.Entity("NotMyShows.Models.UserRecommendation", b =>
+                {
+                    b.Property<int>("SeriesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserProfileId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("PotentialRating")
+                        .HasColumnType("real");
+
+                    b.HasKey("SeriesId", "UserProfileId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("UserRecommendations");
+                });
+
             modelBuilder.Entity("NotMyShows.Models.UserSeries", b =>
                 {
                     b.Property<int>("SeriesId")
@@ -769,6 +790,25 @@ namespace NotMyShows.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("NotMyShows.Models.UserRecommendation", b =>
+                {
+                    b.HasOne("NotMyShows.Models.Series", "Series")
+                        .WithMany("UserRecommendations")
+                        .HasForeignKey("SeriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NotMyShows.Models.UserProfile", "UserProfile")
+                        .WithMany("UserRecommendations")
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Series");
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("NotMyShows.Models.UserSeries", b =>
                 {
                     b.HasOne("NotMyShows.Models.Series", "Series")
@@ -828,6 +868,8 @@ namespace NotMyShows.Migrations
 
                     b.Navigation("SeriesGenres");
 
+                    b.Navigation("UserRecommendations");
+
                     b.Navigation("UserSeries");
                 });
 
@@ -848,6 +890,8 @@ namespace NotMyShows.Migrations
                     b.Navigation("Friends");
 
                     b.Navigation("UserEpisodes");
+
+                    b.Navigation("UserRecommendations");
 
                     b.Navigation("UserSeries");
                 });

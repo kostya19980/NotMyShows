@@ -43,6 +43,7 @@
             },
         });
     })
+
     $("#Series").click(function () {
         var Series_JSON = [];
         var  page = $("#StartId").val();
@@ -135,10 +136,12 @@
                             if (result.ended == "---") {
                                 result.ended = null;
                             }
+                            console.log(result);
                             OtherInfo_JSON.push({
                                 MyShowsId: result.id,
                                 EpisodeTime: result.runtime,
                                 TotalTime: result.runtimeTotal,
+                                Description: result.description,
                                 Channel: {
                                     Name: result.network.title
                                 },
@@ -163,7 +166,6 @@
                 $.when.apply($, deferreds).done(function () {
                     console.log(OtherInfo_JSON);
                     OtherInfo_JSON = JSON.stringify(OtherInfo_JSON);
-                    console.log(OtherInfo_JSON);
                     $.ajax({
                         type: "POST",
                         contentType: "application/json",
@@ -177,6 +179,15 @@
                 });
             }
         })
+    })
+    $("#GetUsers").click(function () {
+        $.ajax({
+            type: "GET",
+            url: "/Home/ParseUsers",
+            success: function (response) {
+                console.log(response)
+            }
+        });
     })
     function CheckFirsttWatchStatus()
     {
@@ -326,12 +337,12 @@
         //})
     });
     $(".custom-checkbox").click(function () {
-        var episodeId = $(this).attr("id");
+        var episodeId = [$(this).attr("id")];
         var seriesId = $(".series-info-container").attr("value");
         $.ajax({
             type: "POST",
-            url: "/Profiles/CheckEpisode",
-            data: { "EpisodeId": episodeId, "SeriesId": seriesId},
+            url: "/Profiles/CheckEpisodes",
+            data: { "CheckedIds": episodeId, "SeriesId": seriesId},
             success: function (response) {
                 console.log("Отмечена серия");
                 console.log(response);

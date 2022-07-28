@@ -27,8 +27,7 @@
                     +11777
                 </div>
             </div>
-            @{
-                if (User.Identity.Name != Model.UserName)
+                @if (!Model.IsProfileOwner)
                 {
                     <button class="remove-friend-button" value="@Model.Id">
                         В друзьях
@@ -59,7 +58,6 @@
                         </script>
                     }
                 }
-            }
         </div>
     </div>
     <div class="separator">
@@ -92,7 +90,7 @@
         </div>
         <div class="stat-item">
             <div class="stat-number">
-                @((Model.ProfileStats.HoursSpent/24).ToString("N0"))
+                @((Model.ProfileStats.DaysSpent).ToString("N0"))
             </div>
             <div class="stat-name">
                 Потрачено дней
@@ -198,14 +196,13 @@
         </label>
         <div class="user-events">
             @{
-                var Groups = Model.UserEvents.GroupBy(x => x.Date.Year & x.Date.Day);
-                foreach (var group in Groups)
+                foreach (var group in Model.GroupedUserEvents)
                 {
                     <label>
-                        @group.First().Date.ToShortDateString()
+                        @group.Date.ToShortDateString()
                     </label>
                     <div class="day-events">
-                        @foreach (var userEvent in group)
+                        @foreach (var userEvent in group.UserEvents)
                         {
                             <div class="event-block">
                                 <div>

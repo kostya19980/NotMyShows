@@ -19,6 +19,7 @@ namespace NotMyShows.Data
         public DbSet<WatchStatus> WatchStatuses { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Friend> Friends { get; set; }
+        public DbSet<UserRecommendation> UserRecommendations { get; set; }
 
         public SeriesContext(DbContextOptions<SeriesContext> options)
             : base(options)
@@ -67,6 +68,21 @@ namespace NotMyShows.Data
             modelBuilder.Entity<UserEpisodes>()
                 .HasOne(u => u.UserProfile)
                 .WithMany(ue => ue.UserEpisodes)
+                .HasForeignKey(u => u.UserProfileId);
+            base.OnModelCreating(modelBuilder);
+
+            //UserRecommendations
+            modelBuilder.Entity<UserRecommendation>()
+                .HasKey(k => new { k.SeriesId, k.UserProfileId });
+
+            modelBuilder.Entity<UserRecommendation>()
+                .HasOne(s => s.Series)
+                .WithMany(us => us.UserRecommendations)
+                .HasForeignKey(s => s.SeriesId);
+
+            modelBuilder.Entity<UserRecommendation>()
+                .HasOne(u => u.UserProfile)
+                .WithMany(us => us.UserRecommendations)
                 .HasForeignKey(u => u.UserProfileId);
             base.OnModelCreating(modelBuilder);
         }

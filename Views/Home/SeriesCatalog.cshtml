@@ -1,0 +1,79 @@
+﻿@model NotMyShows.ViewModel.SeriesCatalogViewModel
+@{
+    ViewData["Title"] = "Series Search";
+}
+<link rel="stylesheet" href="~/css/SeriesSearch.css" />
+<button id="GetUsers">
+    ParseUsers
+</button>
+<button id="Genres">
+    Жанры
+</button>
+<button id="Series">
+    Сериалы
+</button>
+<input type="number" id="StartId" />
+<input type="number" id="EndId" />
+<button id="SeriesById">
+    Подробности о сериале
+</button>
+<div class="page-title">
+    <h1>
+        Каталог сериалов
+    </h1>
+</div>
+<div class="filter-series-container">
+    <div class="big-search-input-container">
+        <input class="search-input" placeholder="Поиск по сериалам" />
+        <button class="search-button">
+            <svg>
+                <use xlink:href="/Icons/outline/20/search.svg#search_icon"></use>
+            </svg>
+            Искать
+        </button>
+    </div>
+    <div class="series-filters">
+        <label>Фильтры</label>
+        <div class="filter-selects">
+            <div class="selects-row">
+                <select class="filter-select">
+                    <option value="" disabled selected>Жанр</option>
+                </select>
+                <select class="filter-select">
+                    <option value="" disabled selected>Страна</option>
+                </select>
+                <select class="filter-select">
+                    <option value="" disabled selected>Студия</option>
+                </select>
+            </div>
+            <div class="selects-row">
+                <select class="filter-select">
+                    <option value="" disabled selected>Год выхода</option>
+                </select>
+                <select class="filter-select">
+                    <option value="" disabled selected>Статус</option>
+                </select>
+                <select class="filter-select">
+                    <option value="" disabled selected>Рейтинг IMDB</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="series-search-result">
+    @foreach (var item in Model.SeriesListView)
+    {
+        <a id="@item.SeriesId" class="series-search-card" asp-controller="Profiles" asp-action="Series" asp-route-SeriesId="@item.SeriesId">
+            <div class="series-cover-container">
+                <img src="\@Html.Raw(item.PicturePath)" class="series-cover" />
+                <div class="series-status" style="background-color:@item.StatusColor">
+                    @item.StatusName
+                </div>
+            </div>
+            <div class="series-titles-container">
+                <label class="series-russian-title">@item.Title</label>
+                <label class="series-origin-title">@item.OriginalTitle</label>
+            </div>
+        </a>
+    }
+</div>
